@@ -1,0 +1,64 @@
+{
+  "_from": "google-reverse-image-search",
+  "_id": "google-reverse-image-search@0.1.1",
+  "_inBundle": false,
+  "_integrity": "sha512-pUiw6tiMWyIS3iukA3I8S7K9qSYZh9+gq82Bj7/dl23ysTQpr1/zFiRoVGEC35ekECvRXa2++pK/c68LesxzrQ==",
+  "_location": "/google-reverse-image-search",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "google-reverse-image-search",
+    "name": "google-reverse-image-search",
+    "escapedName": "google-reverse-image-search",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/google-reverse-image-search/-/google-reverse-image-search-0.1.1.tgz",
+  "_shasum": "545d26fe2357fc8e4135d76d0e95280112629151",
+  "_spec": "google-reverse-image-search",
+  "_where": "C:\\Users\\guy03\\Documents\\dev\\playground\\dropsource",
+  "author": {
+    "name": "Ozymandias",
+    "email": "tomas.rav@gmail.com",
+    "url": "Tomas Ravinskas"
+  },
+  "bugs": {
+    "url": "https://github.com/OzymandiasTheGreat/gris/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "chrome-launcher": "^0.13.1",
+    "chrome-remote-interface": "^0.28.1",
+    "formdata-node": "^2.1.1",
+    "node-fetch": "^2.6.0"
+  },
+  "deprecated": false,
+  "description": "Reverse image search module with rich results using Google",
+  "devDependencies": {
+    "@types/cheerio": "^0.22.17",
+    "@types/node-fetch": "^2.5.6",
+    "typescript": "^3.8.3"
+  },
+  "files": [
+    "dist/index.js",
+    "dist/index.d.ts",
+    "LICENSE",
+    "README.md"
+  ],
+  "homepage": "https://github.com/OzymandiasTheGreat/gris",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "name": "google-reverse-image-search",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OzymandiasTheGreat/gris.git"
+  },
+  "version": "0.1.1"
+}
