@@ -1,12 +1,20 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Resources:
-  shopintScanWebsite:
+  scanWebsite:
     Type: AWS::Serverless::Function
     Properties:
       Runtime: nodejs12.x
       Handler: index.handler
-      Timeout: 30
-      MemorySize: 256
-      FunctionName: shopintScanWebsite
-      CodeUri: s3://s3.shopint.io/c42c9d3dcc96f26a5fb9931d0e039962
+      Timeout: 60
+      MemorySize: 512
+      FunctionName: scanWebsite
+      Policies:
+      - Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - lambda:InvokeFunction
+          - lambda:InvokeAsync
+          Resource: '*'
+      CodeUri: s3://shopint-functions/8afd050e537d89f5d32b38f3ef0355e6

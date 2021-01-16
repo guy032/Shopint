@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "sam local invoke --region eu-central-1 -e event.json shopintGetWebsiteData",
-    "package": "sam package --template-file template.yaml --s3-bucket s3.shopint.io --output-template-file packaged.yaml",
-    "deploy": "aws cloudformation deploy --region eu-central-1 --template-file packaged.yaml --stack-name shopintGetWebsiteData --capabilities CAPABILITY_IAM",
+    "start": "sam local invoke --region eu-central-1 -e event.json getWebsiteData",
+    "package": "sam package --template-file template.yaml --profile shopint --s3-bucket shopint-functions --output-template-file packaged.yaml",
+    "deploy": "aws cloudformation deploy --profile shopint --region eu-central-1 --template-file packaged.yaml --stack-name getWebsiteData --capabilities CAPABILITY_IAM",
     "publish": "npm run package && npm run deploy"
   },
   "dependencies": {
