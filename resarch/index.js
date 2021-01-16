@@ -46,9 +46,9 @@ const urls = [
   // "https://www.ebay.com/itm/Resin-Fox-Statue-Nordic-Modern-Abstract-Figurine-Office-Home-Animal-Ornament/373405583884?_trkparms=aid%3D1110006%26algo%3DHOMESPLICE.SIM%26ao%3D1%26asc%3D20200818143132%26meid%3D2289976ddc9748c699e2bce39fa445ba%26pid%3D101198%26rk%3D1%26rkt%3D12%26mehot%3Dnone%26sd%3D254660575517%26itm%3D373405583884%26pmt%3D1%26noa%3D0%26pg%3D2047675%26algv%3DSimplAMLv5PairwiseWebWithDarwoV3BBEV2b%26brand%3DUnbranded&_trksid=p2047675.c101198.m1985",
   // "https://www.kaekoo.com/product-page/houndstooth",
   // "http://www.snapit.co.il/product/%d7%9e%d7%93%d7%a4%d7%a1%d7%aa-%e2%80%8f%d7%94%d7%96%d7%a8%d7%a7%d7%aa-%d7%93%d7%99%d7%95-epson-ecotank-l3156-%d7%90%d7%a4%d7%a1%d7%95%d7%9f/",
-  // "https://www.amazon.ca/Sculptures-Abstract-Geometric-Ornaments-Decorations/dp/B08HWZMSJY",
+  "https://www.amazon.ca/Sculptures-Abstract-Geometric-Ornaments-Decorations/dp/B08HWZMSJY",
   // "http://www.matara-g.com/items/2077521-HL-L2310D-Brother",
-  "https://www.toner-supply.co.il/product/%D7%9E%D7%93%D7%A4%D7%A1%D7%AA-%E2%80%8F%D7%9C%D7%99%D7%99%D7%96%D7%A8-hp-laser-107w-4zb78a",
+  // "https://www.toner-supply.co.il/product/%D7%9E%D7%93%D7%A4%D7%A1%D7%AA-%E2%80%8F%D7%9C%D7%99%D7%99%D7%96%D7%A8-hp-laser-107w-4zb78a",
 ];
 
 const getProductSchema = (html) => {
@@ -113,17 +113,7 @@ const getProduct = (url) => new Promise(async (resolve) => {
     product = getProductSchema(data);
   }
 
-  const {
-    name, offers, price, title,
-  } = product;
-
-  let result = {};
-  if (name) result.name = name;
-  if (offers) result.offers = offers;
-  if (price) result.price = price;
-  if (title) result.title = title;
-
-  resolve(result);
+  resolve(product);
 });
 
 (async () => {

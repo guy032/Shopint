@@ -8,5 +8,12 @@
     },
     "author": "",
     "license": "ISC",
-    "dependencies": {}
+    "dependencies": {
+        "axios": "^0.21.1",
+        "js-crawler": "^0.3.21",
+        "jsdom": "^16.4.0",
+        "jsonld-parser": "^0.6.1",
+        "puppeteer": "^5.5.0",
+        "url-parse": "^1.4.7"
+    }
 }
