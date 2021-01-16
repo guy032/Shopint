@@ -7,9 +7,6 @@ const Url = require('url-parse');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 
-console.log('crawl');
-const url = 'https://alluxur.com/';
-
 const getHtml = async (url) => {
     return (await axios.get(url, {
         headers: {
@@ -46,7 +43,6 @@ const getProductSchema = (html) => {
         let { textContent } = ldScript;
         textContent = textContent.replace(/\s*[\r\n]/gm, '');
         const jsonLd = JSON.parse(ldScript.textContent.replace(/\s*[\r\n]/gm, ''));
-        // console.log(jsonLd);
         if (Array.isArray(jsonLd)) {
           product = jsonLd.find(item => item['@type'].indexOf('Product') !== -1);
         } else {
@@ -73,10 +69,13 @@ const getProductSchema = (html) => {
 
 const getCrawledSchemas = async (rootUrl) => {
     return new Promise((res) => {
-        console.log(Crawler);
         const schemas = [];
-        new Crawler().configure({depth: 10, userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36', shouldCrawl: (currUrl) => currUrl.includes(url)})
-        .crawl(url, function(page) {
+        new Crawler().configure({
+          depth: 10, 
+          userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36', 
+          shouldCrawl: (currUrl) => currUrl.includes(rootUrl)
+        })
+        .crawl(rootUrl, function(page) {
             // console.log(page);
             schemas.push(getProductSchema(page.content))
         }, function(response) {
@@ -93,10 +92,15 @@ const getCrawledSchemas = async (rootUrl) => {
     })
 }
 
-(async () => {
-    console.time('scan');
-    console.log(await getCrawledSchemas(url));
-    console.timeEnd('scan');
-    // console.log(await getHtml(url));
-})()
+exports.scanUrl = async (url) => {
+  return await getCrawledSchemas(url);
+}
+
+// (async () => {
+//     const url = 'https://alluxur.com/';
+//     console.time('scan');
+//     console.log(await getCrawledSchemas(url));
+//     console.timeEnd('scan');
+//     console.log(await getHtml(url));
+// })()
 

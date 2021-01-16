@@ -10,6 +10,7 @@
     "license": "ISC",
     "dependencies": {
         "axios": "^0.21.1",
+        "google-search-results-nodejs": "^2.0.1",
         "js-crawler": "^0.3.21",
         "jsdom": "^16.4.0",
         "jsonld-parser": "^0.6.1",
