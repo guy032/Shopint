@@ -1,6 +1,6 @@
+const Url = require("url-parse");
 const chromeLambda = require("chrome-aws-lambda");
 const { puppeteer, executablePath } = chromeLambda;
-console.log(executablePath);
 
 const exclude_services = [
   "facebook.net",
@@ -8,33 +8,45 @@ const exclude_services = [
   "google-analytics.com",
 ];
 
-exports.handler = async event => {
-  const chromiumPath = await executablePath;
-  console.log(chromiumPath);
+exports.handler = async (event) => {
   const { url } = event;
   console.log(url);
+
+  const { host } = new Url(url);
+  const originHost = host;
+
   const browser = await puppeteer.launch({
-    executablePath: chromiumPath,
-    args: ['--no-sandbox'],
+    executablePath: await executablePath,
+    args: ["--no-sandbox", "--disable-setuid-sandbox", "--single-process"],
   });
-  const page = await browser.newPage();
+  const pages = await browser.pages();
+  const page = pages[0];
   await page.setRequestInterception(true);
-  page.on('error', err => console.log('error happen at the page: ', err));
-  page.on('pageerror', pageerr => console.log('pageerror occurred: ', pageerr));
+  page.on("error", (err) => console.log("error happen at the page: ", err));
+  page.on("pageerror", (pageerr) =>
+    console.log("pageerror occurred: ", pageerr)
+  );
   page.on("request", (request) => {
-    if (["image", "stylesheet", "font"].indexOf(request.resourceType()) !== -1) {
+    if (["image", "stylesheet", "font"].indexOf(request.resourceType()) !== -1)
       request.abort();
-      // console.log(`${request.resourceType()}: aborted`);
-    } else if (exclude_services.some(v => request._url.includes(v))) {
+    else if (exclude_services.some((v) => request._url.includes(v)))
       request.abort();
-      // console.log(`${request._url}: aborted`);
-    } else {
-      request.continue();
-      console.log(`${request.resourceType()}: ${request._url}`);
-    }
+    else request.continue();
   });
   await page.goto(url, { waitUntil: "networkidle0", timeout: 15000 });
-  const hrefs = await page.$$eval('a', as => as.map(a => a.href));
-  console.log(hrefs);
-  return hrefs;
+  let hrefs = await page.$$eval("a", (as) => as.map((a) => a.href));
+  hrefs = hrefs.filter((href) => {
+    const { host } = new Url(href);
+    return href != "" &&
+    originHost.indexOf(host) !== -1 &&
+    !href.endsWith(".pdf") &&
+    !href.endsWith(".jpg") &&
+    !href.endsWith(".jpeg") &&
+    !href.endsWith(".png")
+  });
+  console.log(hrefs.length);
+  await browser.close();
+  return {
+    hrefs
+  };
 };

@@ -9,6 +9,7 @@
     "publish": "npm run package && npm run deploy"
   },
   "dependencies": {
-    "puppeteer-core": "^5.5.0"
+    "puppeteer-core": "^5.5.0",
+    "url-parse": "^1.4.7"
   }
 }

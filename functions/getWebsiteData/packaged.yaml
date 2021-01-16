@@ -11,4 +11,4 @@ Resources:
       FunctionName: shopintGetWebsiteData
       Layers:
       - arn:aws:lambda:eu-central-1:764866452798:layer:chrome-aws-lambda:20
-      CodeUri: s3://s3.shopint.io/7e7d812ea72fc137d5dc7ffa5559ecdd
+      CodeUri: s3://s3.shopint.io/732d7ab3fa71d91718852fd3b834cd17

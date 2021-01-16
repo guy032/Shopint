@@ -7,8 +7,8 @@ Resources:
     Properties:
       Runtime: nodejs12.x
       Handler: index.handler
-      Timeout: 30
-      MemorySize: 256
+      Timeout: 60
+      MemorySize: 512
       FunctionName: shopintGetWebsiteData
       Layers:
         - arn:aws:lambda:eu-central-1:764866452798:layer:chrome-aws-lambda:20
