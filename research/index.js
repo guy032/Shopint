@@ -95,49 +95,62 @@ const getProductSchema = (html) => {
   return product;
 };
 
-const getProduct = (url) =>
-  new Promise(async (resolve) => {
-    let product;
-    url = new Url(url);
-    const { host, href } = url;
-    const hostArr = host.split(".");
-    if (hostArr.includes("amazon")) {
-      product = await getAmazonProductByUrl(url);
-    } else {
-      console.time('launch and newPage');
-      const browser = await puppeteer.launch();
-      const page = await browser.newPage();
-      console.timeEnd('launch and newPage');
-      await page.setRequestInterception(true);
-      const resourceRequests = [];
-      page.on('error', err => console.log('error happen at the page: ', err));
-      page.on('pageerror', pageerr => console.log('pageerror occurred: ', pageerr));
-      page.on("request", (request) => {
-        if (["image", "stylesheet", "font"].indexOf(request.resourceType()) !== -1) {
-          request.abort();
-          // console.log(`${request.resourceType()}: aborted`);
-        } else if (exclude_services.some(v => request._url.includes(v))) {
-          request.abort();
-          // console.log(`${request._url}: aborted`);
-        } else {
-          request.continue();
-          resourceRequests.push[request._url];
-          console.log(`${request.resourceType()}: ${request._url}`);
-        }
-      });
-      // remove all unnessecary web assets from requests
-      await page.goto(href, { waitUntil: "networkidle0", timeout: 15000 });
-      const html = await page.content();
-      product = getProductSchema(html);
-      await browser.close();
+class BrowserManager {
+  constructor(){
+    this.instances = [];
+  }
+  async createInstance(){
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    const instance = {browser, page, isFree: false};
+    this.instances.push(instance);
+    return instance;
+  }
+  async getFreeInstance(){
+    for (const instance of this.instances){
+      if (instance.isFree){
+        instance.isFree = false;
+        return instance;
+      }
     }
-    resolve(product);
-  });
+    // if here, no free instance
+    return this.createInstance();
+  }
+  freeInstance(instance){
+    instance.isFree = true;
+  }
+  async clearInstances(){
+    const promises = [];
+    for (const instance of this.instances){
+      promises.push(instance.browser.close())
+    }
+    await Promise.all(promises);
+  }
+}
+
+const getProduct = (url, browserManager) => new Promise(async (resolve) => {
+  let product;
+  url = new Url(url);
+  const { host, href } = url;
+  const hostArr = host.split('.');
+  if (hostArr.includes('amazon')) {
+    product = await getAmazonProductByUrl(url);
+  } else {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(href, {waitUntil: 'networkidle0', timeout: 15000});
+    const html = await page.content();
+    product = getProductSchema(html);
+    await browser.close();
+  }
+  resolve(product);
+});
 
 (async () => {
   console.time('scan');
   const promises = [];
-  for (url of urls) promises.push(getProduct(url));
+  const browserManager = new BrowserManager();
+  for (url of urls) promises.push(getProduct(url, browserManager));
   const results = await Promise.all(promises);
   console.log(results);
   console.timeEnd('scan');
