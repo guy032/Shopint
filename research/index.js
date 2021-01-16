@@ -92,7 +92,40 @@ const getProductSchema = (html) => {
   return product;
 }
 
-const getProduct = (url) => new Promise(async (resolve) => {
+class BrowserManager {
+  constructor(){
+    this.instances = [];
+  }
+  async createInstance(){
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    const instance = {browser, page, isFree: false};
+    this.instances.push(instance);
+    return instance;
+  }
+  async getFreeInstance(){
+    for (const instance of this.instances){
+      if (instance.isFree){
+        instance.isFree = false;
+        return instance;
+      }
+    }
+    // if here, no free instance
+    return this.createInstance();
+  }
+  freeInstance(instance){
+    instance.isFree = true;
+  }
+  async clearInstances(){
+    const promises = [];
+    for (const instance of this.instances){
+      promises.push(instance.browser.close())
+    }
+    await Promise.all(promises);
+  }
+}
+
+const getProduct = (url, browserManager) => new Promise(async (resolve) => {
   let product;
   url = new Url(url);
   const { host, href } = url;
@@ -112,7 +145,8 @@ const getProduct = (url) => new Promise(async (resolve) => {
 
 (async () => {
   const promises = [];
-  for (url of urls) promises.push(getProduct(url));
+  const browserManager = new BrowserManager();
+  for (url of urls) promises.push(getProduct(url, browserManager));
   const results = await Promise.all(promises);
   console.log(results);
 })();
