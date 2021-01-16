@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  shopintGetWebsiteData:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: nodejs12.x
+      Handler: index.handler
+      Timeout: 30
+      MemorySize: 256
+      FunctionName: shopintGetWebsiteData
+      Layers:
+      - arn:aws:lambda:eu-central-1:764866452798:layer:chrome-aws-lambda:20
+      CodeUri: s3://s3.shopint.io/7e7d812ea72fc137d5dc7ffa5559ecdd
