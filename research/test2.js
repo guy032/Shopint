@@ -3,7 +3,7 @@ const Url = require("url-parse");
 const url = "https://www.zipy.co.il";
 const originUrlObj = new Url(url);
 
-let visitedURLs = []; // Array of what was crawled already
+let visitedURLs = [];
 
 console.time('scan');
 let c = new Crawler({
