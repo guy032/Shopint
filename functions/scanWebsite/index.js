@@ -38,7 +38,7 @@ exports.handler = async (event) => {
     };
 
     const scanUrl = async (url) => {
-        let { hrefs, product } = await invokeLambda({ functionName: 'getWebsiteData', payload: { url } });
+        let { hrefs, product } = await invokeLambda({ functionName: 'parseSingleUrl', payload: { url } });
         if (product) {
             product.url = url;
             products.push(product);
