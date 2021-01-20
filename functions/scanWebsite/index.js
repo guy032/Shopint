@@ -5,6 +5,16 @@ const Lambda = new AWS.Lambda();
 
 const visitedURLs = [];
 
+const crawlQueue = queue({ results: [] });
+const searchQueue = queue({ results: [] });
+const insertQueue = (queue, href) => {
+  queue.push(async (cb) => {
+    const result = await scanUrl(href);
+    // console.log(result);
+    cb(null, result);
+  });
+}
+
 async function invokeLambda({ functionName, payload }) {
   const req = {
     FunctionName: functionName,
@@ -18,14 +28,6 @@ async function invokeLambda({ functionName, payload }) {
   return JSON.parse(Payload);
 }
 
-const insertQueue = href => {
-  q.push(async (cb) => {
-    const result = await scanUrl(href);
-    // console.log(result);
-    cb(null, result);
-  });
-}
-
 async function scanUrl(url) {
   let { hrefs, product } = await invokeLambda({ functionName: 'getWebsiteData', payload: { url } });
   if (hrefs) {
@@ -34,7 +36,8 @@ async function scanUrl(url) {
     for (const href of hrefs) {
       if (!visitedURLs.includes(href)) {
         visitedURLs.push(href);
-        insertQueue(href);
+        insertQueue(crawlQueue, href);
+        insertQueue(searchQueue, href);
       }
     }
   } else {
@@ -43,7 +46,22 @@ async function scanUrl(url) {
   return url;
 }
 
-const q = queue({ results: [] });
+async function searchProduct(product) {
+  let { searchResults } = await invokeLambda({ functionName: 'getSearchResults', payload: { product } });
+  // if (hrefs) {
+  //   console.log(hrefs.length);
+  //   console.log(product);
+  //   for (const href of hrefs) {
+  //     if (!visitedURLs.includes(href)) {
+  //       visitedURLs.push(href);
+  //       insertQueue(href);
+  //     }
+  //   }
+  // } else {
+  //   // console.log('no hrefs');
+  // }
+  // return url;
+}
 
 /* q.on('success', function (result, job) {
   console.log('job finished processing:', job.toString().replace(/\n/g, ''))
@@ -52,7 +70,7 @@ const q = queue({ results: [] });
 
 function wait() {
   return new Promise((resolve, reject) => {
-    q.start((err) => {
+    crawlQueue.start((err) => {
       console.log(`visitedURLs: ${visitedURLs.length}`);
       if (err) console.log(err);
       else {
@@ -66,7 +84,7 @@ function wait() {
 exports.handler = async (event) => {
   const { url } = event;
 
-  q.push(async (cb) => {
+  crawlQueue.push(async (cb) => {
     visitedURLs.push(url);
     const result = await scanUrl(url);
     cb(null, result);
