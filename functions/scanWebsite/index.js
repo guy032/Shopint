@@ -1,9 +1,12 @@
 const queue = require('queue');
 const AWS = require("aws-sdk");
-AWS.config.region = 'eu-central-1';
-const Lambda = new AWS.Lambda();
 
-const visitedURLs = [];
+const { STAGE, InvokePort } = process.env;
+console.log(STAGE);
+const Lambda = STAGE === 'prod' ? new AWS.Lambda() : new AWS.Lambda({
+  endpoint: `http://host.docker.internal:${InvokePort}`,
+  sslEnabled: false
+});
 
 async function invokeLambda({ functionName, payload }) {
   const req = {
@@ -18,53 +21,58 @@ async function invokeLambda({ functionName, payload }) {
   return JSON.parse(Payload);
 }
 
-const insertQueue = href => {
-  q.push(async (cb) => {
-    const result = await scanUrl(href);
-    // console.log(result);
-    cb(null, result);
-  });
-}
-
-async function scanUrl(url) {
-  let { hrefs, product } = await invokeLambda({ functionName: 'getWebsiteData', payload: { url } });
-  if (hrefs) {
-    console.log(hrefs.length);
-    console.log(product);
-    for (const href of hrefs) {
-      if (!visitedURLs.includes(href)) {
-        visitedURLs.push(href);
-        insertQueue(href);
-      }
-    }
-  } else {
-    // console.log('no hrefs');
-  }
-  return url;
-}
-
-const q = queue({ results: [] });
-
-/* q.on('success', function (result, job) {
-  console.log('job finished processing:', job.toString().replace(/\n/g, ''))
-  console.log('The result is:', result)
-}); */
-
-function wait() {
-  return new Promise((resolve, reject) => {
-    q.start((err) => {
-      console.log(`visitedURLs: ${visitedURLs.length}`);
-      if (err) console.log(err);
-      else {
-        // console.log(JSON.stringify(visitedURLs));
-        resolve(visitedURLs);
-      }
-    });
-  });
-}
-
 exports.handler = async (event) => {
   const { url } = event;
+
+  const q = queue({ results: [] });
+
+  const insertQueue = href => {
+    q.push(async (cb) => {
+      const result = await scanUrl(href);
+      // console.log(result);
+      cb(null, result);
+    });
+  }
+  
+  const scanUrl = async url => {
+    let { hrefs, product } = await invokeLambda({ functionName: 'getWebsiteData', payload: { url } });
+    if (product) {
+      product.url = url;
+      products.push(product);
+      console.log(JSON.stringify(product));
+    }
+    if (hrefs) {
+      console.log(`hrefs: ${hrefs.length}`);
+      for (const href of hrefs) {
+        if (!visitedURLs.includes(href)) {
+          visitedURLs.push(href);
+          insertQueue(href);
+        }
+      }
+    } else {
+      // console.log('no hrefs');
+    }
+    return url;
+  }
+  
+  const wait = () => {
+    return new Promise((resolve, reject) => {
+      q.start((err) => {
+        if (err) console.log(err);
+        else {
+          console.log(`visitedURLs: ${visitedURLs.length}`);
+          console.log(`products: ${products.length}`);
+          resolve({
+            visitedURLs,
+            products,
+          });
+        }
+      });
+    });
+  }
+
+  const visitedURLs = [];
+  const products = [];
 
   q.push(async (cb) => {
     visitedURLs.push(url);

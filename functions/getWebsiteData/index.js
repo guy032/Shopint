@@ -125,7 +125,7 @@ exports.handler = async (event) => {
       request.abort();
     else request.continue();
   });
-  await page.goto(url, { waitUntil: "networkidle0", timeout: 20000 });
+  await page.goto(url, { waitUntil: "networkidle0", timeout: 30000 });
   let hrefs = await page.$$eval("a", (as) => as.map((a) => a.href));
   hrefs = hrefs.filter((href) => {
     const { host } = new Url(href);

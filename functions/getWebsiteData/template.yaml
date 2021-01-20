@@ -7,8 +7,8 @@ Resources:
     Properties:
       Runtime: nodejs12.x
       Handler: index.handler
-      Timeout: 30
-      MemorySize: 1000
+      Timeout: 180
+      MemorySize: 1024
       FunctionName: getWebsiteData
       Layers:
         - arn:aws:lambda:eu-central-1:764866452798:layer:chrome-aws-lambda:20

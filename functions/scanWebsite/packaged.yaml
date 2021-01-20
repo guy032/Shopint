@@ -1,13 +1,19 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
+Globals:
+  Function:
+    Environment:
+      Variables:
+        STAGE: prod
+        InvokePort: 9001
 Resources:
   scanWebsite:
     Type: AWS::Serverless::Function
     Properties:
       Runtime: nodejs12.x
       Handler: index.handler
-      Timeout: 300
-      MemorySize: 1000
+      Timeout: 900
+      MemorySize: 1024
       FunctionName: scanWebsite
       Policies:
       - Version: '2012-10-17'
@@ -17,4 +23,4 @@ Resources:
           - lambda:InvokeFunction
           - lambda:InvokeAsync
           Resource: '*'
-      CodeUri: s3://shopint-functions/446b90a82c5f8058d8c531eefde615b7
+      CodeUri: s3://shopint-functions/0e11112b94fea36de70780bd1aca76ec
