@@ -8,16 +8,6 @@ const Lambda = STAGE === 'prod' ? new AWS.Lambda() : new AWS.Lambda({
   sslEnabled: false
 });
 
-const crawlQueue = queue({ results: [] });
-const searchQueue = queue({ results: [] });
-const insertQueue = (queue, href) => {
-  queue.push(async (cb) => {
-    const result = await scanUrl(href);
-    // console.log(result);
-    cb(null, result);
-  });
-}
-
 async function invokeLambda({ functionName, payload }) {
   const req = {
     FunctionName: functionName,
