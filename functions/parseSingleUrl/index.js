@@ -129,7 +129,7 @@ exports.handler = async (event) => {
     ];
 
     /**
-     *  if parseHrefs is true
+     *  if parseSchema is true
      */
     const product =
         parseSchema && originHost.split('.').includes('amazon')
