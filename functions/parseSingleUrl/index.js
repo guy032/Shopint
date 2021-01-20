@@ -71,6 +71,7 @@ const getProductSchema = (html) => {
 exports.handler = async (event) => {
     // parse args
     const { url, parseHrefs, parseSchema } = event;
+    console.log('url: ', url);
     const { host: originHost } = new Url(url);
 
     // open browser and page
@@ -89,7 +90,6 @@ exports.handler = async (event) => {
     // filter irrelevant requests (images, fonts, etc.)
     await page.setRequestInterception(true);
     page.on('request', (request) => {
-        console.log(request._url);
         if (
             excludedTypes.indexOf(request.resourceType()) !== -1 ||
             excludeServices.some((v) => request._url.includes(v))
@@ -117,7 +117,7 @@ exports.handler = async (event) => {
                     return (
                         href != '' &&
                         originHost.indexOf(host) !== -1 &&
-                        !excludedExtensions.map((ext) => href.endsWith(`.${ext}`)).includes(true) &&
+                        !excludedExtensions.map((ext) => href.split('?')[0].endsWith(`.${ext}`)).includes(true) &&
                         !excludedPrefixes.map((prefix) => href.startsWith(prefix)).includes(true)
                     );
                 })

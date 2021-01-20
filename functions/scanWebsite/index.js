@@ -2,14 +2,14 @@ const queue = require('queue');
 const AWS = require('aws-sdk');
 
 const { STAGE, InvokePort } = process.env;
-console.log(STAGE);
-const Lambda =
-    STAGE === 'prod'
-        ? new AWS.Lambda()
-        : new AWS.Lambda({
+const Lambda = new AWS.Lambda(
+    STAGE !== 'prod'
+        ? {
               endpoint: `http://host.docker.internal:${InvokePort}`,
               sslEnabled: false,
-          });
+          }
+        : undefined
+);
 
 async function invokeLambda({ functionName, payload }) {
     const req = {
@@ -17,9 +17,7 @@ async function invokeLambda({ functionName, payload }) {
         Payload: JSON.stringify(payload),
         InvocationType: 'RequestResponse',
     };
-    // console.log(JSON.stringify(payload));
     const response = await Lambda.invoke(req).promise();
-    // console.log(JSON.stringify(response));
     const { Payload } = response;
     return JSON.parse(Payload);
 }
@@ -38,7 +36,10 @@ exports.handler = async (event) => {
     };
 
     const scanUrl = async (url) => {
-        let { hrefs, product } = await invokeLambda({ functionName: 'parseSingleUrl', payload: { url } });
+        let { hrefs, product } = await invokeLambda({
+            functionName: 'parseSingleUrl',
+            payload: { url, parseHrefs: true, parseSchema: true },
+        });
         if (product) {
             product.url = url;
             products.push(product);
@@ -53,8 +54,6 @@ exports.handler = async (event) => {
                     insertQueue(searchQueue, href);
                 }
             }
-        } else {
-            // console.log('no hrefs');
         }
         return url;
     };
@@ -76,7 +75,7 @@ exports.handler = async (event) => {
         // return url;
     }
 
-    const wait = () => {
+    const executeCrawlQueue = () => {
         return new Promise((resolve, reject) => {
             crawlQueue.start((err) => {
                 if (err) console.log(err);
@@ -101,5 +100,5 @@ exports.handler = async (event) => {
         cb(null, result);
     });
 
-    return await wait();
+    return await executeCrawlQueue();
 };
