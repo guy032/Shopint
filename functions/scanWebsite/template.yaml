@@ -1,5 +1,5 @@
-AWSTemplateFormatVersion : '2010-09-09'
-Transform : AWS::Serverless-2016-10-31
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
 
 Globals:
   Function:
@@ -15,7 +15,7 @@ Resources:
       Runtime: nodejs12.x
       Handler: index.handler
       Timeout: 900
-      MemorySize: 1024
+      MemorySize: 128
       FunctionName: scanWebsite
       Policies:
         - Version: '2012-10-17'
@@ -24,4 +24,4 @@ Resources:
               Action:
                 - lambda:InvokeFunction
                 - lambda:InvokeAsync
-              Resource: "*"
+              Resource: '*'

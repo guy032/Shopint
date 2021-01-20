@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  parseSingleUrl:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: nodejs12.x
+      Handler: index.handler
+      Timeout: 180
+      MemorySize: 128
+      FunctionName: getSearchResults
+      Layers:
+        - arn:aws:lambda:eu-central-1:764866452798:layer:chrome-aws-lambda:20
+      CodeUri: s3://shopint-functions/d5aeae0a30273fad4d9ddc9b9a38c131

@@ -13,14 +13,14 @@ Resources:
       Runtime: nodejs12.x
       Handler: index.handler
       Timeout: 900
-      MemorySize: 1024
+      MemorySize: 128
       FunctionName: scanWebsite
       Policies:
-      - Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Action:
-          - lambda:InvokeFunction
-          - lambda:InvokeAsync
-          Resource: '*'
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+                - lambda:InvokeAsync
+              Resource: '*'
       CodeUri: s3://shopint-functions/0e11112b94fea36de70780bd1aca76ec

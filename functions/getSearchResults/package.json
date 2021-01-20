@@ -1,0 +1,15 @@
+{
+  "name": "shopint-get-website-data",
+  "version": "1.0.0",
+  "scripts": {
+    "local": "sam local start-lambda -p 9001 --region eu-central-1 --profile shopint",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "sam local invoke --profile shopint --region eu-central-1 -e event.json getSearchResults",
+    "package": "sam package --template-file template.yaml --profile shopint --s3-bucket shopint-functions --output-template-file packaged.yaml",
+    "deploy": "aws cloudformation deploy --profile shopint --region eu-central-1 --template-file packaged.yaml --stack-name getSearchResults --capabilities CAPABILITY_IAM",
+    "publish": "npm run package && npm run deploy"
+  },
+  "dependencies": {
+    "google-search-results-nodejs": "^2.0.1"
+  }
+}
