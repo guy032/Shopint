@@ -7,8 +7,8 @@ Resources:
     Properties:
       Runtime: nodejs12.x
       Handler: index.handler
-      Timeout: 60
-      MemorySize: 512
+      Timeout: 300
+      MemorySize: 1000
       FunctionName: scanWebsite
       Policies:
         - Version: '2012-10-17'

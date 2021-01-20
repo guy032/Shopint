@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "sam local invoke --region eu-central-1 -e event.json getWebsiteData",
+    "start": "sam local invoke --profile shopint --region eu-central-1 -e event.json getWebsiteData",
     "package": "sam package --template-file template.yaml --profile shopint --s3-bucket shopint-functions --output-template-file packaged.yaml",
     "deploy": "aws cloudformation deploy --profile shopint --region eu-central-1 --template-file packaged.yaml --stack-name getWebsiteData --capabilities CAPABILITY_IAM",
     "publish": "npm run package && npm run deploy"
   },
   "dependencies": {
+    "amazon-buddy": "file:amazon-buddy",
+    "jsdom": "^16.4.0",
+    "jsonld-parser": "^0.6.1",
     "puppeteer-core": "^5.5.0",
     "url-parse": "^1.4.7"
   }

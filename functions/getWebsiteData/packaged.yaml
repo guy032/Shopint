@@ -6,9 +6,9 @@ Resources:
     Properties:
       Runtime: nodejs12.x
       Handler: index.handler
-      Timeout: 60
-      MemorySize: 512
+      Timeout: 30
+      MemorySize: 1000
       FunctionName: getWebsiteData
       Layers:
       - arn:aws:lambda:eu-central-1:764866452798:layer:chrome-aws-lambda:20
-      CodeUri: s3://shopint-functions/e0dcdc431d642f25b6226050d420c1a8
+      CodeUri: s3://shopint-functions/573b4528dece8ae1974ef4d46ceb98f6
