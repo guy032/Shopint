@@ -1,3 +1,5 @@
 {
-  "url": "http://www.matara-g.com/"
+  "url": "http://www.matara-g.com/",
+  "parseHrefs": true,
+  "parseSchema": true
 }

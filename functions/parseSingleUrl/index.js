@@ -1,20 +1,14 @@
 const fs = require('fs');
 const Url = require('url-parse');
-const chromeLambda = require('chrome-aws-lambda');
-const { puppeteer, executablePath } = chromeLambda;
-const WAE = require('jsonld-parser').default;
-const jsdom = require('jsdom');
-const { JSDOM } = jsdom;
-
-process.setMaxListeners(0);
-
-const originalConsoleError = console.error;
-console.error = (msg) => {
-    if (msg.startsWith(msg, 'Error: Could not parse CSS stylesheet')) return;
-    originalConsoleError(msg);
-};
-
+const { JSDOM } = require('jsdom');
+const { puppeteer, executablePath } = require('chrome-aws-lambda');
 const { getAmazonProductByUrl } = require('./vendors/amazon');
+const WAE = require('jsonld-parser').default;
+
+const excludeServices = ['facebook.net', 'facebook.com', 'google-analytics.com'];
+const excludedTypes = ['image', 'stylesheet', 'font'];
+const excludedPrefixes = ['#', 'javascript'];
+const excludedExtensions = ['pdf', 'jpg', 'jpeg', 'webp', 'png', 'woff', 'ttf', 'css'];
 
 const ConvertKeysToLowerCase = (obj) => {
     var key,
@@ -27,8 +21,6 @@ const ConvertKeysToLowerCase = (obj) => {
     }
     return newobj;
 };
-
-const exclude_services = ['facebook.net', 'facebook.com', 'google-analytics.com'];
 
 const getProductSchema = (html) => {
     html = html
@@ -70,19 +62,20 @@ const getProductSchema = (html) => {
         }
     }
 
-    if (product) product = ConvertKeysToLowerCase(product);
-    console.log(product);
+    if (product) {
+        product = ConvertKeysToLowerCase(product);
+    }
     return product;
 };
 
 exports.handler = async (event) => {
-    const { url } = event;
-    console.log(url);
+    // parse args
+    const { url, parseHrefs, parseSchema } = event;
+    const { host: originHost } = new Url(url);
 
-    const { host } = new Url(url);
-    const originHost = host;
-
+    // open browser and page
     const browser = await puppeteer.launch({
+        headless: true,
         executablePath: await executablePath,
         args: [
             '--no-sandbox',
@@ -91,63 +84,67 @@ exports.handler = async (event) => {
             '--disk-cache-dir=/temp/browser-cache-disk',
         ],
     });
+    const page = (await browser.pages())[0];
 
-    let chromeTmpDataDir = null;
-
-    let chromeSpawnArgs = browser.process().spawnargs;
-    for (let i = 0; i < chromeSpawnArgs.length; i++) {
-        if (chromeSpawnArgs[i].indexOf('--user-data-dir=') === 0) {
-            chromeTmpDataDir = chromeSpawnArgs[i].replace('--user-data-dir=', '');
-        }
-    }
-
-    let product;
-
-    const pages = await browser.pages();
-    const page = pages[0];
+    // filter irrelevant requests (images, fonts, etc.)
     await page.setRequestInterception(true);
     page.on('request', (request) => {
-        if (['image', 'stylesheet', 'font'].indexOf(request.resourceType()) !== -1) request.abort();
-        else if (exclude_services.some((v) => request._url.includes(v))) request.abort();
-        else request.continue();
+        console.log(request._url);
+        if (
+            excludedTypes.indexOf(request.resourceType()) !== -1 ||
+            excludeServices.some((v) => request._url.includes(v))
+        ) {
+            request.abort();
+        } else {
+            request.continue();
+        }
     });
+
+    // go to page url
     await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
-    let hrefs = await page.$$eval('a', (as) => as.map((a) => a.href));
-    hrefs = hrefs.filter((href) => {
-        const { host } = new Url(href);
-        return (
-            href != '' &&
-            originHost.indexOf(host) !== -1 &&
-            !href.endsWith('.pdf') &&
-            !href.endsWith('.jpg') &&
-            !href.endsWith('.jpeg') &&
-            !href.endsWith('.webp') &&
-            !href.endsWith('.png') &&
-            !href.startsWith('javascript') &&
-            !href.startsWith('#')
-        );
-    });
-    for (let i = 0; i < hrefs.length; i++) {
-        const href = hrefs[i];
-        const { origin, pathname } = new Url(href);
-        hrefs[i] = `${origin}${pathname}`;
-    }
-    hrefs = hrefs.filter((item, pos) => hrefs.indexOf(item) == pos);
-    console.log(hrefs.length);
 
-    const hostArr = originHost.split('.');
-    if (hostArr.includes('amazon')) {
-        product = await getAmazonProductByUrl(url);
-    } else {
-        const html = await page.content();
-        product = getProductSchema(html);
-    }
+    /**
+     * if parseHrefs is true
+     * Get all hrefs in page
+     * Exclude irrelevant extension or prefixes
+     * Remove duplicates
+     */
+    const hrefs = parseHrefs && [
+        ...new Set(
+            (await page.$$eval('a', (as) => as.map((a) => a.href)))
+                .filter((href) => {
+                    const { host } = new Url(href);
+                    return (
+                        href != '' &&
+                        originHost.indexOf(host) !== -1 &&
+                        !excludedExtensions.map((ext) => href.endsWith(`.${ext}`)).includes(true) &&
+                        !excludedPrefixes.map((prefix) => href.startsWith(prefix)).includes(true)
+                    );
+                })
+                .map((href) => {
+                    const { origin, pathname } = new Url(href);
+                    return `${origin}${pathname}`;
+                })
+        ),
+    ];
 
+    /**
+     *  if parseHrefs is true
+     */
+    const product =
+        parseSchema && originHost.split('.').includes('amazon')
+            ? await getAmazonProductByUrl(url)
+            : getProductSchema(await page.content());
     console.log(product);
 
+    // close browser, clean user data
+    const dirArgName = '--user-data-dir=';
+    const chromeTmpDataDirArg = browser.process().spawnargs.find((arg) => arg.startsWith(dirArgName));
+    const chromeTmpDataDir = chromeTmpDataDirArg ? chromeTmpDataDirArg.split(dirArgName)[1] : null;
     await browser.close();
-
-    if (chromeTmpDataDir !== null) fs.rmdirSync(chromeTmpDataDir, { recursive: true });
+    if (chromeTmpDataDir !== null) {
+        fs.rmdirSync(chromeTmpDataDir, { recursive: true });
+    }
 
     return {
         hrefs,
