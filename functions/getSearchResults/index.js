@@ -11,7 +11,6 @@ const textSearch = async ({ queryContent, numResults }) => {
         engine: 'google',
         google_domain: 'google.com',
         api_key: secretKey,
-        num: 100,
     };
     return await new Promise((res) => {
         search.json({ ...textSearchParams, q: queryContent, num: numResults || DEFAULT_TEXT_NUM_RESULTS }, (data) => {
