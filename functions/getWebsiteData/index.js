@@ -135,6 +135,7 @@ exports.handler = async (event) => {
       !href.endsWith(".pdf") &&
       !href.endsWith(".jpg") &&
       !href.endsWith(".jpeg") &&
+      !href.endsWith(".webp") &&
       !href.endsWith(".png") &&
       !href.startsWith("javascript") &&
       !href.startsWith("#")
