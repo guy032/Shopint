@@ -1,6 +1,11 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-
+Globals:
+  Function:
+    Environment:
+      Variables:
+        STAGE: prod
+        InvokePort: 9002
 Resources:
   parseSingleUrl:
     Type: AWS::Serverless::Function
