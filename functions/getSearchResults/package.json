@@ -5,8 +5,8 @@
     "local": "sam local start-lambda -p 9002 --region eu-central-1 --profile shopint",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "sam local invoke --profile shopint --region eu-central-1 -e event.json getSearchResults",
-    "package": "sam package --template-file template.yaml --profile shopint --s3-bucket shopint-functions --output-template-file packaged.yaml",
-    "deploy": "aws cloudformation deploy --profile shopint --region eu-central-1 --template-file packaged.yaml --stack-name getSearchResults --capabilities CAPABILITY_IAM",
+    "package": "sam package --template-file template.json --profile shopint --s3-bucket shopint-functions --output-template-file packaged.json",
+    "deploy": "aws cloudformation deploy --profile shopint --region eu-central-1 --template-file packaged.json --stack-name getSearchResults --capabilities CAPABILITY_IAM",
     "publish": "npm run package && npm run deploy"
   },
   "dependencies": {
