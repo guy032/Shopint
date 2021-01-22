@@ -52,5 +52,6 @@ exports.handler = async (event) => {
     await Promise.all([executeQueue(crawlQueue), executeQueue(searchQueue)]);
     console.log(`visitedURLs: ${visitedURLs.length}`);
     console.log(`products: ${products.length}`);
+    // console.log(JSON.stringify(products));
     return products;
 };

@@ -1,13 +1,20 @@
 const Url = require('url-parse');
 const axios = require('axios');
+const axiosRetry = require('axios-retry');
 const { JSDOM } = require('jsdom');
 
 const { getAmazonProductByUrl } = require('./vendors/amazon');
 const { getProductSchema } = require('./schema');
-const {
-    prefixes: excludedPrefixes,
-    extensions: excludedExtensions,
-} = require('./excluded.json');
+const { prefixes: excludedPrefixes, extensions: excludedExtensions } = require('./excluded.json');
+
+axiosRetry(axios, {
+    retries: 3,
+    retryDelay: (retryCount) => {
+        const delay = retryCount * 1000;
+        console.log(`delay: ${delay}`);
+        return delay;
+    },
+});
 
 exports.handler = async (event) => {
     // parse args
@@ -22,13 +29,16 @@ exports.handler = async (event) => {
     console.log(JSON.stringify(files)); */
 
     const getHtml = async (url) => {
-        return (await axios.get(url, {
-            headers: {
-                Referer: url,
-                userAgent: 'Mozilla/5.0 (X11; Linux x86_64; Storebot-Google/1.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36'
-            }
-        })).data;
-    }
+        return (
+            await axios.get(url, {
+                headers: {
+                    Referer: url,
+                    userAgent:
+                        'Mozilla/5.0 (X11; Linux x86_64; Storebot-Google/1.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+                },
+            })
+        ).data;
+    };
 
     const html = await getHtml(url);
 
@@ -43,7 +53,7 @@ exports.handler = async (event) => {
     const { document } = window;
     const hrefs = parseHrefs && [
         ...new Set(
-            ([...document.querySelectorAll('a')])
+            [...document.querySelectorAll('a')]
                 .filter((link) => {
                     const { href } = link;
                     const { host } = new Url(href);
