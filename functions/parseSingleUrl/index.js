@@ -1,20 +1,28 @@
 const fs = require('fs');
 const Url = require('url-parse');
+const osu = require('node-os-utils');
 
 const { puppeteer, executablePath } = require('chrome-aws-lambda');
 const { getAmazonProductByUrl } = require('./vendors/amazon');
 const { getProductSchema } = require('./schema');
-
-const excludeServices = ['facebook.net', 'facebook.com', 'google-analytics.com'];
-const excludedTypes = ['image', 'stylesheet', 'font'];
-const excludedPrefixes = ['#', 'javascript'];
-const excludedExtensions = ['pdf', 'jpg', 'jpeg', 'webp', 'png', 'woff', 'ttf', 'css'];
+const {
+    services: excludedServices,
+    types: excludedTypes,
+    prefixes: excludedPrefixes,
+    extensions: excludedExtensions,
+} = require('./excluded.json');
 
 exports.handler = async (event) => {
     // parse args
     const { url, parseHrefs, parseSchema } = event;
     console.log('url: ', url);
     const { host: originHost } = new Url(url);
+
+    const { drive } = osu;
+    const driveInfo = await drive.info();
+    console.log(JSON.stringify(driveInfo));
+    const files = fs.readdirSync('/tmp');
+    console.log(JSON.stringify(files));
 
     // open browser and page
     const browser = await puppeteer.launch({
@@ -34,7 +42,7 @@ exports.handler = async (event) => {
     page.on('request', (request) => {
         if (
             excludedTypes.indexOf(request.resourceType()) !== -1 ||
-            excludeServices.some((v) => request._url.includes(v))
+            excludedServices.some((v) => request._url.includes(v))
         ) {
             request.abort();
         } else {
@@ -64,11 +72,12 @@ exports.handler = async (event) => {
                     );
                 })
                 .map((href) => {
-                    const { origin, pathname } = new Url(href);
-                    return `${origin}${pathname}`;
+                    const { pathname } = new Url(href);
+                    return `${originHost}${pathname}`;
                 })
         ),
     ];
+    if (hrefs) console.log(`hrefs: ${hrefs.length}`);
 
     /**
      *  if parseSchema is true
@@ -77,7 +86,7 @@ exports.handler = async (event) => {
         parseSchema && originHost.split('.').includes('amazon')
             ? await getAmazonProductByUrl(url)
             : getProductSchema(await page.content());
-    console.log(product);
+    if (product) console.log(product);
 
     // close browser, clean user data
     const dirArgName = '--user-data-dir=';

@@ -56,7 +56,6 @@ const exclude_services = ['facebook.net', 'facebook.com', 'google-analytics.com'
 // http://data-vocabulary.org
 // http://schema.org/product
 // https://schema.org/product
-// https://schema.org/Product
 
 const getProductSchema = (html) => {
     html = html

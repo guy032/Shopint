@@ -1,14 +1,14 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-
 Resources:
-  parseSingleUrl:
+  parseMultiUrl:
     Type: AWS::Serverless::Function
     Properties:
       Runtime: nodejs12.x
       Handler: index.handler
       Timeout: 180
-      MemorySize: 128
-      FunctionName: parseSingleUrl
+      MemorySize: 2048
+      FunctionName: parseMultiUrl
       Layers:
-        - arn:aws:lambda:eu-central-1:764866452798:layer:chrome-aws-lambda:20
+      - arn:aws:lambda:eu-central-1:764866452798:layer:chrome-aws-lambda:20
+      CodeUri: s3://shopint-functions/f748e37cfdd5fa111a88e0049a5afb7a

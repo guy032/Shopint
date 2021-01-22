@@ -17,9 +17,12 @@ exports.handler = async (event) => {
 
     const scanUrl = async (url) => {
         let { hrefs, product } = await invokeLambda({
-            functionName: 'parseSingleUrlSource',
+            functionName: 'parseSingleUrl',
             payload: { url, parseHrefs: true, parseSchema: true },
         });
+        
+        console.log(`${url}: ${hrefs ? hrefs.length : hrefs}`);
+
         if (product) {
             products.push({ url, ...product });
         }

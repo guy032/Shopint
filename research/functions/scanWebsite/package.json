@@ -1,0 +1,14 @@
+{
+  "name": "shopint-scan-website",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "sam local invoke --profile shopint --region eu-central-1 -e event.json scanWebsite --env-vars env.json",
+    "package": "sam package --template-file template.yaml --profile shopint --s3-bucket shopint-functions --output-template-file packaged.yaml",
+    "deploy": "aws cloudformation deploy --profile shopint --region eu-central-1 --template-file packaged.yaml --stack-name scanWebsite --capabilities CAPABILITY_IAM",
+    "publish": "npm run package && npm run deploy"
+  },
+  "dependencies": {
+    "queue": "^6.0.2"
+  }
+}

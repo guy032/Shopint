@@ -1,0 +1,74 @@
+{
+  "_from": "amazon-buddy",
+  "_id": "amazon-buddy@2.2.26",
+  "_inBundle": false,
+  "_integrity": "sha512-npXtKDPf5eqG342tp0OClbayno+t1M14Y0r9nki3RNcSPPs2hbDpl7d9lTBzHpYA0CMeAPJeEXkHsF31BwdPfQ==",
+  "_location": "/amazon-buddy",
+  "_phantomChildren": {
+    "ip-regex": "2.1.0",
+    "psl": "1.8.0",
+    "punycode": "2.1.1"
+  },
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "amazon-buddy",
+    "name": "amazon-buddy",
+    "escapedName": "amazon-buddy",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/amazon-buddy/-/amazon-buddy-2.2.26.tgz",
+  "_shasum": "267c6cc123ba59aa7c51ef5de391efa561a2a8ee",
+  "_spec": "amazon-buddy",
+  "_where": "C:\\Users\\guy03\\Documents\\dev\\playground\\dropsource",
+  "author": {
+    "name": "drawrowfly"
+  },
+  "bin": {
+    "amazon-buddy": "bin/cli.js"
+  },
+  "bugs": {
+    "url": "https://github.com/drawrowfly/amazon-scraper/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "async": "^3.2.0",
+    "bluebird": "^3.7.2",
+    "cheerio": "^1.0.0-rc.3",
+    "json2csv": "^4.5.3",
+    "moment": "^2.27.0",
+    "ora": "^4.0.2",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
+    "tough-cookie": "^3.0.1",
+    "yargs": "^14.2.0"
+  },
+  "deprecated": false,
+  "description": "Amazon Scraper. You can scrape products from amazon search result and you can also scrape reviews from a specific product",
+  "devDependencies": {},
+  "files": [
+    "lib"
+  ],
+  "homepage": "https://github.com/drawrowfly/amazon-scraper#readme",
+  "keywords": [
+    "amazon",
+    "scraper"
+  ],
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "name": "amazon-buddy",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drawrowfly/amazon-scraper.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "2.2.26"
+}

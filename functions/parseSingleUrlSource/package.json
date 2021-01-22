@@ -1,0 +1,19 @@
+{
+  "name": "shopint-parse-single-url-source",
+  "version": "1.0.0",
+  "scripts": {
+    "local": "sam local start-lambda -p 9002 --region eu-central-1 --profile shopint",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "sam local invoke --profile shopint --region eu-central-1 -e event.json parseSingleUrlSource",
+    "package": "sam package --template-file template.yaml --profile shopint --s3-bucket shopint-functions --output-template-file packaged.yaml",
+    "deploy": "aws cloudformation deploy --profile shopint --region eu-central-1 --template-file packaged.yaml --stack-name parseSingleUrlSource --capabilities CAPABILITY_IAM",
+    "publish": "npm run package && npm run deploy"
+  },
+  "dependencies": {
+    "amazon-buddy": "file:amazon-buddy",
+    "axios": "^0.21.1",
+    "jsdom": "^16.4.0",
+    "jsonld-parser": "^0.6.1",
+    "url-parse": "^1.4.7"
+  }
+}

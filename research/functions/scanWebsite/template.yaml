@@ -1,11 +1,13 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
+
 Globals:
   Function:
     Environment:
       Variables:
         STAGE: prod
         InvokePort: 9001
+
 Resources:
   scanWebsite:
     Type: AWS::Serverless::Function
@@ -16,11 +18,10 @@ Resources:
       MemorySize: 128
       FunctionName: scanWebsite
       Policies:
-      - Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Action:
-          - lambda:InvokeFunction
-          - lambda:InvokeAsync
-          Resource: '*'
-      CodeUri: s3://shopint-functions/2c6b97a81c1a45f6979a13f3a1139cbc
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+                - lambda:InvokeAsync
+              Resource: '*'
