@@ -9,6 +9,7 @@
     "publish": "npm run package && npm run deploy"
   },
   "dependencies": {
-    "queue": "^6.0.2"
+    "queue": "^6.0.2",
+    "url-parse": "^1.4.7"
   }
 }

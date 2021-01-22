@@ -1,8 +1,10 @@
 const queue = require('queue');
+const Url = require('url-parse');
 const { invokeLambda } = require('./lambda');
 
 exports.handler = async (event) => {
     const { url } = event;
+    const { host: rootHost } = new Url(url);
 
     const visitedURLs = [];
     const products = [];
@@ -25,7 +27,8 @@ exports.handler = async (event) => {
         }
 
         (hrefs || []).forEach((href) => {
-            if (!visitedURLs.includes(href)) {
+            const { host: hrefHost } = new Url(href);
+            if (rootHost === hrefHost && !visitedURLs.includes(href)) {
                 visitedURLs.push(href);
                 insertQueue(crawlQueue, scanUrl, href);
                 insertQueue(searchQueue, searchProduct, href);
