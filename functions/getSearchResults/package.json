@@ -1,5 +1,5 @@
 {
-  "name": "shopint-get-website-data",
+  "name": "shopint-get-search-results",
   "version": "1.0.0",
   "scripts": {
     "local": "sam local start-lambda -p 9002 --region eu-central-1 --profile shopint",

@@ -6,20 +6,20 @@
       "Environment": {
         "Variables": {
           "STAGE": "prod",
-          "InvokePort": 9002
+          "InvokePort": 9003
         }
       }
     }
   },
   "Resources": {
-    "getSearchResults": {
+    "getIp": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
         "Runtime": "nodejs12.x",
         "Handler": "index.handler",
-        "Timeout": 180,
+        "Timeout": 10,
         "MemorySize": 128,
-        "FunctionName": "getSearchResults",
+        "FunctionName": "getIp",
         "Layers": ["arn:aws:lambda:eu-central-1:764866452798:layer:chrome-aws-lambda:20"]
       }
     }
