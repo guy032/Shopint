@@ -2,6 +2,7 @@ const Url = require('url-parse');
 const axios = require('axios');
 const axiosRetry = require('axios-retry');
 const { JSDOM } = require('jsdom');
+const { invokeRemoteLambda } = require('./lambda');
 
 const { getAmazonProductByUrl } = require('./vendors/amazon');
 const { getProductSchema } = require('./schema');
@@ -23,15 +24,23 @@ exports.handler = async (event) => {
     const { host: rootHost, origin: rootOrigin } = new Url(url);
 
     const getHtml = async (url) => {
-        return (
-            await axios.get(url, {
-                headers: {
-                    Referer: url,
-                    userAgent:
-                        'Mozilla/5.0 (X11; Linux x86_64; Storebot-Google/1.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                },
-            })
-        ).data;
+        // TODO - use axios or remote lambda by configuration or by env properties
+
+        // return (
+        //     await axios.get(url, {
+        //         headers: {
+        //             Referer: url,
+        //             userAgent:
+        //                 'Mozilla/5.0 (X11; Linux x86_64; Storebot-Google/1.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+        //         },
+        //     })
+        // ).data;
+        return await invokeRemoteLambda({
+            functionName: 'getHtmlHidden',
+            payload: {
+                url,
+            },
+        });
     };
 
     const html = await getHtml(url);

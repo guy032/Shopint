@@ -7,13 +7,13 @@ Globals:
         STAGE: prod
         InvokePort: 9003
 Resources:
-  getHtmlHidden:
+  getHtmlRestart-upperregion-endIdstart-index-end:
     Type: AWS::Serverless::Function
     Properties:
       Runtime: nodejs12.x
       Handler: index.handler
       Timeout: 180
       MemorySize: 128
-      FunctionName: getHtmlHidden
+      FunctionName: getHtmlRestart-upperregion-endIdstart-index-end
       Layers:
-        - arn:aws:lambda:eu-central-1:764866452798:layer:chrome-aws-lambda:20
+        - arn:aws:lambda:start-region-end:764866452798:layer:chrome-aws-lambda:20
