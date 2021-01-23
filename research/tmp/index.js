@@ -5,5 +5,4 @@ const url = 'http://matara-g.com/';
 
 (async () => {
     console.log(await scanUrl(url));
-})()
-
+})();

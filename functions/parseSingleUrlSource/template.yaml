@@ -7,6 +7,6 @@ Resources:
     Properties:
       Runtime: nodejs12.x
       Handler: index.handler
-      Timeout: 30
+      Timeout: 60
       MemorySize: 256
       FunctionName: parseSingleUrlSource
