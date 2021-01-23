@@ -1,0 +1,16 @@
+{
+  "name": "shopint-get-ip-start-region-end-start-index-end",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "sam local invoke --profile shopint --region start-region-end -e event.json getIpstart-index-end",
+    "package": "sam package --template-file template.yaml --profile shopint --s3-bucket shopint-functions-start-region-end --output-template-file packaged.yaml",
+    "deploy": "aws cloudformation deploy --profile shopint --region start-region-end --template-file packaged.yaml --stack-name getIp3 --capabilities CAPABILITY_IAM",
+    "publish": "npm run package && npm run deploy"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "google-search-results-nodejs": "^2.0.1",
+    "http": "^0.0.1-security"
+  }
+}
