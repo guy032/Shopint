@@ -18,8 +18,3 @@ google-search-results-nodejs@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/google-search-results-nodejs/-/google-search-results-nodejs-2.0.1.tgz#af9a06c431efb2be853423fdc93f4e951c6b870e"
   integrity sha512-DfiqawBwliUfdy//OUtbIxaU2r7f2frwbCedr6GLZoP5ucZKFiSDvmb1xyXRng744ElHpeSxmhnwDTwVQTk5zw==
-
-http@^0.0.1-security:
-  version "0.0.1-security"
-  resolved "https://registry.yarnpkg.com/http/-/http-0.0.1-security.tgz#3aac09129d12dc2747bbce4157afde20ad1f7995"
-  integrity sha512-RnDvP10Ty9FxqOtPZuxtebw1j4L/WiqNMDtuc1YMH1XQm5TgDRaR1G9u8upL6KD1bXHSp9eSXo/ED+8Q7FAr+g==
