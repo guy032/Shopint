@@ -22,12 +22,6 @@ exports.handler = async (event) => {
     console.log('url: ', url);
     const { host: rootHost, origin: rootOrigin } = new Url(url);
 
-    /* const { drive } = osu;
-    const driveInfo = await drive.info();
-    console.log(JSON.stringify(driveInfo));
-    const files = fs.readdirSync('/tmp');
-    console.log(JSON.stringify(files)); */
-
     const getHtml = async (url) => {
         return (
             await axios.get(url, {

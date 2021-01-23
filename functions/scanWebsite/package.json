@@ -9,6 +9,7 @@
     "publish": "npm run package && npm run deploy"
   },
   "dependencies": {
+    "@google-cloud/firestore": "^4.8.1",
     "queue": "^6.0.2",
     "url-parse": "^1.4.7"
   }
