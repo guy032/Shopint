@@ -6,7 +6,7 @@ Resources:
     Properties:
       Runtime: nodejs12.x
       Handler: index.handler
-      Timeout: 30
+      Timeout: 60
       MemorySize: 256
       FunctionName: parseSingleUrlSource
-      CodeUri: s3://shopint-functions/900bcc4dbffaced002800d1ec779e913
+      CodeUri: s3://shopint-functions/69402f7d31c7a312e5ea69a6471c06cc

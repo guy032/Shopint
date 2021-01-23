@@ -1,5 +1,6 @@
 {
-  "url": "http://www.snapit.co.il",
+  "url": "http://www.matara-g.com/",
+  "parseHTML": true,
   "parseHrefs": true,
   "parseSchema": true
 }

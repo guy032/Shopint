@@ -2,5 +2,6 @@
   "services": ["facebook.net", "facebook.com", "google-analytics.com"],
   "types": ["image", "stylesheet", "font", "media"],
   "prefixes": ["#", "javascript"],
-  "extensions": ["pdf", "jpg", "jpeg", "webp", "png", "woff", "ttf", "css"]
+  "extensions": ["pdf", "jpg", "jpeg", "webp", "png", "woff", "ttf", "css"],
+  "meta": ["viewport", "current_subdomain", "referer_url", "request_url"]
 }

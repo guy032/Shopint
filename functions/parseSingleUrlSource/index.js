@@ -5,7 +5,7 @@ const { JSDOM } = require('jsdom');
 
 const { getAmazonProductByUrl } = require('./vendors/amazon');
 const { getProductSchema } = require('./schema');
-const { prefixes: excludedPrefixes, extensions: excludedExtensions } = require('./excluded.json');
+const { prefixes: excludedPrefixes, extensions: excludedExtensions, meta: excludedMeta } = require('./excluded.json');
 
 axiosRetry(axios, {
     retries: 3,
@@ -18,7 +18,7 @@ axiosRetry(axios, {
 
 exports.handler = async (event) => {
     // parse args
-    const { url, parseHrefs, parseSchema } = event;
+    const { url, parseHTML, parseHrefs, parseSchema } = event;
     console.log('url: ', url);
     const { host: rootHost, origin: rootOrigin } = new Url(url);
 
@@ -65,7 +65,18 @@ exports.handler = async (event) => {
                 })
         ),
     ];
-    if (hrefs) console.log(`hrefs: ${hrefs.length}`);
+
+    let title, meta;
+    if (parseHTML) {
+        title = document.title;
+        meta = {};
+        [...document.querySelectorAll('meta')].map((metaTag) => {
+            const { name, content } = metaTag;
+            if (name.length !== 0 && !excludedMeta.includes(name)) meta[name] = content;
+        });
+    }
+
+    // parse title? parse meta tags? parse other schemas?
 
     /**
      *  if parseSchema is true
@@ -77,6 +88,8 @@ exports.handler = async (event) => {
     if (product) console.log(product);
 
     return {
+        title,
+        meta,
         hrefs,
         product,
     };
