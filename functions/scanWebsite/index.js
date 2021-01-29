@@ -24,6 +24,7 @@ exports.handler = async (event) => {
 
     const scanUrl = async (url) => {
         try {
+            url = encodeURI(url);
             let { title, meta, hrefs, product, errorMessage } = await invokeLambda({
                 functionName: 'parseSingleUrlSource',
                 payload: { url, parseHTML: true, parseHrefs: true, parseSchema: true },
@@ -41,7 +42,7 @@ exports.handler = async (event) => {
                         products.push({ url, ...product });
                         const productRef = websiteDoc.collection('products').doc(pathname);
                         // add time to doc
-                        await productRef.set({ url, ...product }, { merge: true });
+                        // await productRef.set({ url, ...product }, { merge: true });
                         pathVal.product = productRef;
                     }
                     if (title) pathVal.title = title;
@@ -56,7 +57,7 @@ exports.handler = async (event) => {
                         }
                     });
                 }
-                websiteDoc.collection('paths').doc(pathname).set(pathVal, { merge: true });
+                // websiteDoc.collection('paths').doc(pathname).set(pathVal, { merge: true });
             }
         } catch (e) {
             console.log(e);

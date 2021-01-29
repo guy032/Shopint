@@ -40,5 +40,6 @@ const getHtmlFromRandomIp = async (url) => {
 };
 
 exports.handler = async (event) => {
-    return await getHtmlFromRandomIp(event.url);
+    const { url } = event;
+    return await getHtmlFromRandomIp(unescape(url));
 };
