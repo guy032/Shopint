@@ -18,7 +18,7 @@ const regions = [
     'us-west-1',
     'us-west-2',
 ];
-const numPerRegion = 2;
+const numPerRegion = 6;
 
 const camelCased = (myString) => {
     return myString

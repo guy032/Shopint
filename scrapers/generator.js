@@ -17,8 +17,8 @@ const regions = [
     'us-west-1',
     'us-west-2',
 ];
-const numPerRegion = 2;
-const creationOffset = 0;
+const numPerRegion = 6;
+const creationOffset = 2;
 const util = require('util');
 
 const exec = util.promisify(require('child_process').exec);
