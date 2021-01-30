@@ -8,5 +8,13 @@ Resources:
       Runtime: nodejs12.x
       Handler: index.handler
       Timeout: 60
-      MemorySize: 256
+      MemorySize: 350
       FunctionName: parseSingleUrlSource
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+                - lambda:InvokeAsync
+              Resource: '*'

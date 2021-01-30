@@ -25,10 +25,12 @@ exports.handler = async (event) => {
     const scanUrl = async (url) => {
         try {
             url = encodeURI(url);
+            console.log(url);
             let { title, meta, hrefs, product, errorMessage } = await invokeLambda({
                 functionName: 'parseSingleUrlSource',
                 payload: { url, parseHTML: true, parseHrefs: true, parseSchema: true },
             });
+            console.log(JSON.stringify(hrefs));
             let { pathname } = new Url(url);
 
             if (pathname.length !== 0) {

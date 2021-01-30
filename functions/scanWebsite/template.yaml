@@ -16,7 +16,7 @@ Resources:
       Runtime: nodejs12.x
       Handler: index.handler
       Timeout: 900
-      MemorySize: 128
+      MemorySize: 256
       FunctionName: scanWebsite
       Policies:
         - Version: '2012-10-17'

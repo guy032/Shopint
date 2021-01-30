@@ -1,7 +1,7 @@
 {
   "services": ["facebook.net", "facebook.com", "google-analytics.com"],
   "types": ["image", "stylesheet", "font", "media"],
-  "prefixes": ["#", "javascript"],
+  "prefixes": ["#", "javascript:", "about:", "mailto:", "tel:", "fax:", "callto:", "whatsapp:", "ts3server:"],
   "extensions": ["pdf", "jpg", "jpeg", "webp", "png", "woff", "ttf", "css"],
   "meta": ["viewport", "current_subdomain", "referer_url", "request_url"]
 }

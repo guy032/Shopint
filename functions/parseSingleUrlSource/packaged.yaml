@@ -7,6 +7,14 @@ Resources:
       Runtime: nodejs12.x
       Handler: index.handler
       Timeout: 60
-      MemorySize: 256
+      MemorySize: 350
       FunctionName: parseSingleUrlSource
-      CodeUri: s3://shopint-functions/69402f7d31c7a312e5ea69a6471c06cc
+      Policies:
+      - Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - lambda:InvokeFunction
+          - lambda:InvokeAsync
+          Resource: '*'
+      CodeUri: s3://shopint-functions/ff0af88fab426a34e389b0228e258fbb

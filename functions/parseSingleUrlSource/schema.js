@@ -15,7 +15,7 @@ const ConvertKeysToLowerCase = (obj) => {
 
 // https://www.scrapingbee.com/blog/scraping-e-commerce-product-data/
 // JSON-LD, RDF-A (todo: check if works), Microdata
-exports.getProductSchema = (html) => {
+exports.getProductSchema = (origin, html) => {
     html = html
         .replace(/http:\/\/schema.org/gm, 'https://schema.org')
         .replace(/https:\/\/schema.org\/product/gm, 'https://schema.org/Product')
@@ -28,8 +28,11 @@ exports.getProductSchema = (html) => {
     if (ldScripts.length > 0) {
         for (ldScript of ldScripts) {
             let { textContent } = ldScript;
-            textContent = textContent.replace(/\s*[\r\n]/gm, '');
-            const jsonLd = JSON.parse(ldScript.textContent.replace(/\s*[\r\n]/gm, ''));
+            textContent = textContent
+                .trim()
+                .replace(/\s*[\r\n]/gm, '')
+                .replace(/^(\/\/\s*)?<!\[CDATA\[|(\/\/\s*)?\]\]>$/g, '');
+            const jsonLd = JSON.parse(textContent);
             if (Array.isArray(jsonLd)) {
                 product = jsonLd.find((item) => item['@type'].indexOf('Product') !== -1);
             } else {
@@ -56,6 +59,13 @@ exports.getProductSchema = (html) => {
     }
 
     if (product) {
+        product = JSON.stringify(product);
+        product = product.replace(/&amp;/gm, '&').replace(/&#160;/gm, ' ');
+        product = JSON.parse(product);
+
+        if (product.url && product.url.startsWith('/')) product.url = `${origin}${product.url}`;
+        if (product.image && product.image.startsWith('/')) product.image = `${origin}${product.image}`;
+
         product = ConvertKeysToLowerCase(product);
     }
     return product;

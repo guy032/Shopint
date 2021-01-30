@@ -69,8 +69,8 @@ exports.handler = async (event) => {
                 })
                 .map((link) => {
                     const { href } = link;
-                    const { pathname } = new Url(href);
-                    return `${rootOrigin}${pathname}`;
+                    const { pathname, query } = new Url(href);
+                    return `${rootOrigin}${pathname}${query}`;
                 })
         ),
     ];
@@ -93,7 +93,7 @@ exports.handler = async (event) => {
     const product =
         parseSchema && rootHost.split('.').includes('amazon')
             ? await getAmazonProductByUrl(url)
-            : getProductSchema(html);
+            : getProductSchema(rootOrigin, html);
     if (product) console.log(product);
 
     return {
