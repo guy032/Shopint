@@ -15,6 +15,7 @@
     "axios-retry": "^3.1.9",
     "jsdom": "^16.4.0",
     "jsonld-parser": "^0.6.1",
+    "parse-open-graph": "^0.4.0",
     "url-parse": "^1.4.7"
   }
 }

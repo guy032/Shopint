@@ -6,15 +6,34 @@ const secretKey = 'bf51181d5f76d3907c66eec3ab797adfb44ad7e7cd9c0402247aef0978267
 
 const search = new SerpApi.GoogleSearch(secretKey);
 
-const textSearch = async ({ queryContent, numResults }) => {
+const textSearch = async ({ queryContent, numResults, country }) => {
     const textSearchParams = {
-        engine: 'google',
-        google_domain: 'google.com',
         api_key: secretKey,
+        google_domain: 'google.com',
+        gl: country,
     };
     return await new Promise((res) => {
         search.json({ ...textSearchParams, q: queryContent, num: numResults || DEFAULT_TEXT_NUM_RESULTS }, (data) => {
-            res(data);
+            delete data.thumbnail;
+            delete data.thumbnails;
+
+            const allowed = [
+                'search_metadata',
+                'search_parameters',
+                'search_information',
+                'organic_results',
+                'pagination',
+                'serpapi_pagination',
+            ];
+
+            const filtered = Object.keys(data)
+                .filter((key) => allowed.includes(key))
+                .reduce((obj, key) => {
+                    obj[key] = data[key];
+                    return obj;
+                }, {});
+
+            res(filtered);
         });
     });
 };
@@ -40,24 +59,25 @@ const imageSearch = async ({ imageUrl, numResults }) => {
 
 exports.handler = async (event) => {
     // parse args
-    const { searchKind, queryContent, imageUrl, numResults } = event;
-    let results = undefined;
+    const { searchKind, queryContent, imageUrl, numResults, country } = event;
+    let results;
+    let links;
     switch (searchKind) {
         case 'text':
-            results = await textSearch({ queryContent, numResults });
+            results = await textSearch({ queryContent, numResults, country });
+            const { organic_results } = results;
+            links = organic_results.map((result) => result.link);
             break;
         case 'image':
             results = await imageSearch({ imageUrl, numResults });
             break;
     }
 
-    console.log(results);
-
     // TODO - process to filter irrelevant results
 
     // TODO - process to return only links
 
     return {
-        results,
+        links,
     };
 };

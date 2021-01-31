@@ -1,5 +1,6 @@
 const { JSDOM } = require('jsdom');
 const WAE = require('jsonld-parser').default;
+const { parse: ogParse } = require('parse-open-graph');
 
 const ConvertKeysToLowerCase = (obj) => {
     var key,
@@ -24,6 +25,8 @@ exports.getProductSchema = (origin, html) => {
     const { window } = dom;
     const { document } = window;
     const ldScripts = document.querySelectorAll('script[type="application/ld+json"]');
+    const ldHTMLSelector = document.querySelector('[itemtype="https://schema.org/Product"]');
+    const ogMetas = document.querySelectorAll('meta[property^="og:"]');
     let product;
     if (ldScripts.length > 0) {
         for (ldScript of ldScripts) {
@@ -47,15 +50,21 @@ exports.getProductSchema = (origin, html) => {
                 }
             }
         }
-    } else {
-        const ldHTMLSelector = document.querySelector('[itemtype="https://schema.org/Product"]');
-        if (ldHTMLSelector) {
-            const { outerHTML } = ldHTMLSelector;
-            const parsed = WAE().parse(outerHTML.replace(/\s*[\r\n]/gm, ''));
-            const { microdata } = parsed;
-            const { Product } = microdata;
-            product = Product[0];
-        }
+    } else if (ldHTMLSelector) {
+        const { outerHTML } = ldHTMLSelector;
+        const parsed = WAE().parse(outerHTML.replace(/\s*[\r\n]/gm, ''));
+        const { microdata } = parsed;
+        const { Product } = microdata;
+        product = Product[0];
+    } else if (ogMetas.length > 0) {
+        const { og } = ogParse(
+            [...ogMetas].map((el) => ({
+                property: el.getAttribute('property'),
+                content: el.getAttribute('content').trim(),
+            }))
+        );
+        const { type } = og;
+        if (type.toLowerCase() === 'product') product = og;
     }
 
     if (product) {
@@ -64,7 +73,9 @@ exports.getProductSchema = (origin, html) => {
         product = JSON.parse(product);
 
         if (product.url && product.url.startsWith('/')) product.url = `${origin}${product.url}`;
-        if (product.image && product.image.startsWith('/')) product.image = `${origin}${product.image}`;
+        if (product.image && !Array.isArray(product.image) && product.image.startsWith('/')) {
+            product.image = `${origin}${product.image}`;
+        }
 
         product = ConvertKeysToLowerCase(product);
     }
