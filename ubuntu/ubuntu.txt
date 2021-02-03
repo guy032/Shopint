@@ -1,3 +1,1 @@
-ssh -i "shopint-maprinter.pem" ubuntu@ec2-18-185-94-54.eu-central-1.compute.amazonaws.com
-ssh -i "shopint-maprinter.pem" ubuntu@ec2-3-127-219-207.eu-central-1.compute.amazonaws.com
 ssh -i "shopint-maprinter.pem" ubuntu@18.192.25.234
