@@ -1,4 +1,7 @@
+const axios = require('axios');
+const cheerio = require('cheerio');
 const SerpApi = require('google-search-results-nodejs');
+const scraperapi_key = 'b29e8e3a0736d92679cc2d37e7e2fada';
 
 const DEFAULT_IMAGE_NUM_RESULTS = 50;
 const DEFAULT_TEXT_NUM_RESULTS = 100;
@@ -38,23 +41,22 @@ const textSearch = async ({ queryContent, numResults, country }) => {
     });
 };
 
-const imageSearch = async ({ imageUrl, numResults }) => {
-    const imageSearchParams = {
-        engine: 'google_reverse_image',
-        image_url: imageUrl,
-        api_key: secretKey,
-    };
+const imageSearch = async ({ imageUrl }) => {
+    const google_url = 'https://www.google.com';
+    const scrapeUrl = (url) => `http://api.scraperapi.com/?api_key=${scraperapi_key}&url=${url}`;
+    const searchUrl = `${google_url}/searchbyimage?image_url=${imageUrl}`;
 
-    return await Promise.all(
-        [...Array((numResults || DEFAULT_IMAGE_NUM_RESULTS) / 10).keys()].map(
-            (pageNum) =>
-                new Promise((res) => {
-                    search.json({ ...imageSearchParams, image_url: imageUrl, start: pageNum * 10 }, (data) => {
-                        res(data);
-                    });
-                })
-        )
-    );
+    const $ = cheerio.load((await axios.get(scrapeUrl(searchUrl))).data);
+    const href = $("a[href^='/search?tbs=simg:CAQS']").first().attr('href');
+    if (href) {
+        const images_results_url = `${google_url}${href}`;
+        const url = scrapeUrl(images_results_url);
+        const { data } = await axios.get(url);
+        const $images = cheerio.load(data);
+        const hrefs = [...$images("a[rel='noopener']")].map((el) => $(el).attr('href'));
+        return hrefs;
+    }
+    return;
 };
 
 exports.handler = async (event) => {
@@ -78,6 +80,6 @@ exports.handler = async (event) => {
     // TODO - process to return only links
 
     return {
-        links,
+        results,
     };
 };

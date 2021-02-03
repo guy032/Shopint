@@ -1,0 +1,48 @@
+download ubuntu 20.04: https://releases.ubuntu.com/20.04/ubuntu-20.04.1-desktop-amd64.iso
+virtualbox tutorial: https://linuxconfig.org/how-to-install-ubuntu-20-04-on-virtualbox
+Ubuntu 20.04 | Disk Space: 100GB | Memory RAM: 16GB
+sudo apt update
+https://linuxize.com/post/how-to-install-virtualbox-guest-additions-in-ubuntu/
+sudo apt-get install virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11 -y
+reboot
+*resolution now can be changed
+
+sudo su -
+apt-get install curl libgl1-mesa-glx libegl1-mesa libxrandr2 libxrandr2 libxss1 libxcursor1 libxcomposite1 libasound2 libxi6 libxtst6 -y
+curl -O https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
+chmod +x ./Anaconda3-2020.11-Linux-x86_64.sh
+./Anaconda3-2020.11-Linux-x86_64.sh
+*click many times enter / type yes and close terminal after finish*
+
+sudo su -
+sudo apt-get install python3-dev git nvidia-cuda-toolkit -y
+pip install py_entitymatching xgboost deepmatcher textdistance
+*ignore: failed to build fasttextmirror*
+
+sudo snap install --classic code # or code-insiders
+*installed Visual Studio Code
+
+conda config --set ssl_verify no
+cd /home/guy/
+git clone https://github.com/Weyoun2211/wdc-lspc-v2.git
+cd wdc-lspc-v2
+conda install pytorch torchvision -c pytorch
+*install GPU support
+
+conda env create -f wdc-lspc-v2.yml
+conda info --envs
+conda activate deepmatcher-*number*
+cd src/data
+python download_datasets_normalized.py
+
+cd /home/guy/wdc-lspc-v2/notebooks/processing/noise_training_sets
+jupyter nbconvert --to notebook --inplace --execute -stdout 01-weyoun2211-noise-training-sets.ipynb
+
+cd /home/guy/wdc-lspc-v2/notebooks/processing/process_magellan
+jupyter notebook --allow-root 01-weyoun2211-process-to-magellan.ipynb
+
+cd /home/guy/wdc-lspc-v2/notebooks/processing/process_wordcooc
+jupyter notebook --allow-root 01-weyoun2211-process-to-wordcooc.ipynb
+
+cd /home/guy/wdc-lspc-v2/notebooks/modeling/deepmatcher
+jupyter notebook --allow-root 01-weyoun2211-run-deepmatcher.ipynb
