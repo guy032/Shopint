@@ -1,7 +1,6 @@
 const { JSDOM } = require('jsdom');
 const WAE = require('jsonld-parser').default;
 const { parse: ogParse } = require('parse-open-graph');
-const fs = require('fs');
 
 const ConvertKeysToLowerCase = (obj) => {
     var key,
@@ -19,7 +18,6 @@ const ConvertKeysToLowerCase = (obj) => {
 // https://www.google.com/searchbyimage?image_url=http://www.snapit.co.il/wp-content/uploads/2021/01/27725-productpicture-lores-en-l3156_main.png.png
 // get different html results with axios compares with postman
 
-// JSON-LD, RDF-A (todo: check if works), Microdata, Open Graph
 exports.getProductSchema = (origin, html) => {
     html = html
         .trim()
@@ -27,15 +25,14 @@ exports.getProductSchema = (origin, html) => {
         .replace(/http:\/\/schema.org/gm, 'https://schema.org')
         .replace(/https:\/\/schema.org\/product/gm, 'https://schema.org/Product')
         .replace(/http:\/\/data-vocabulary.org\/Product/gm, 'https://schema.org/Product')
-        .replace(/typeof="product"/gm, 'typeof="Product"');
-    console.log(html);
+        .replace(/typeof="product"/gm, 'typeof="Product"')
+        .replace(/property="product:price/gm, 'property="og:price');
     const dom = new JSDOM(html);
     const { window } = dom;
     const { document } = window;
     const ldScripts = document.querySelectorAll('script[type="application/ld+json"]');
     const ldHTMLSelector = document.querySelector('[itemtype="https://schema.org/Product"]');
     const rfdHTMLSelectors = document.querySelectorAll('[vocab="https://schema.org/"][typeof="Product"]');
-    console.log(rfdHTMLSelectors.length);
     const ogMetas = document.querySelectorAll('meta[property^="og:"]');
     let product;
     if (ldScripts.length > 0) {
@@ -64,7 +61,7 @@ exports.getProductSchema = (origin, html) => {
         const { Product } = microdata;
         product = Product[0];
     } else if (rfdHTMLSelectors.length > 0) {
-        console.log('RFD-A');
+        console.log('todo: RFD-A');
     } else if (ogMetas.length > 0) {
         const { og } = ogParse(
             [...ogMetas].map((el) => ({

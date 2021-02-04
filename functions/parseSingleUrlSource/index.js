@@ -18,7 +18,6 @@ axiosRetry(axios, {
 });
 
 exports.handler = async (event) => {
-    // parse args
     const { url, parseHTML, parseHrefs, parseSchema } = event;
     console.log('url: ', url);
     const { host: rootHost, origin: rootOrigin } = new Url(url);
@@ -85,8 +84,6 @@ exports.handler = async (event) => {
         });
     }
 
-    // parse title? parse meta tags? parse other schemas?
-
     /**
      *  if parseSchema is true
      */
@@ -96,7 +93,10 @@ exports.handler = async (event) => {
             : getProductSchema(rootOrigin, html);
     if (product) console.log(product);
 
+    // if website is affiliate
+
     return {
+        url,
         title,
         meta,
         hrefs,

@@ -17,4 +17,4 @@ Resources:
           - lambda:InvokeFunction
           - lambda:InvokeAsync
           Resource: '*'
-      CodeUri: s3://shopint-functions/d3ee375a26a71b8c927e63f91f929b2b
+      CodeUri: s3://shopint-functions/d03c23000d25b1c33dbc5ff0e0a42a36

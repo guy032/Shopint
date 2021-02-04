@@ -1,85 +1,58 @@
 const axios = require('axios');
+const axiosRetry = require('axios-retry');
 const cheerio = require('cheerio');
-const SerpApi = require('google-search-results-nodejs');
 const scraperapi_key = 'b29e8e3a0736d92679cc2d37e7e2fada';
+const google_url = 'https://www.google.com';
+const scrapeUrl = (url) => `http://api.scraperapi.com/?api_key=${scraperapi_key}&url=${url}`;
 
-const DEFAULT_IMAGE_NUM_RESULTS = 50;
-const DEFAULT_TEXT_NUM_RESULTS = 100;
-const secretKey = 'bf51181d5f76d3907c66eec3ab797adfb44ad7e7cd9c0402247aef097826773e';
+axiosRetry(axios, {
+    retryCondition: (error) => {
+        console.log('error:');
+        console.log(JSON.stringify(error));
+        return !error.response;
+    },
+});
 
-const search = new SerpApi.GoogleSearch(secretKey);
-
-const textSearch = async ({ queryContent, numResults, country }) => {
-    const textSearchParams = {
-        api_key: secretKey,
-        google_domain: 'google.com',
-        gl: country,
-    };
-    return await new Promise((res) => {
-        search.json({ ...textSearchParams, q: queryContent, num: numResults || DEFAULT_TEXT_NUM_RESULTS }, (data) => {
-            delete data.thumbnail;
-            delete data.thumbnails;
-
-            const allowed = [
-                'search_metadata',
-                'search_parameters',
-                'search_information',
-                'organic_results',
-                'pagination',
-                'serpapi_pagination',
-            ];
-
-            const filtered = Object.keys(data)
-                .filter((key) => allowed.includes(key))
-                .reduce((obj, key) => {
-                    obj[key] = data[key];
-                    return obj;
-                }, {});
-
-            res(filtered);
-        });
-    });
+const textSearch = async ({ content }) => {
+    const searchUrl = `${google_url}/search?q=${encodeURIComponent(content)}&num=100`;
+    console.time('request');
+    const response = await axios.get(scrapeUrl(searchUrl));
+    console.timeEnd('request');
+    const $ = cheerio.load(response.data);
+    return [...$('.g a:not([class])')].map((el) => $(el).attr('href'));
 };
 
-const imageSearch = async ({ imageUrl }) => {
-    const google_url = 'https://www.google.com';
-    const scrapeUrl = (url) => `http://api.scraperapi.com/?api_key=${scraperapi_key}&url=${url}`;
-    const searchUrl = `${google_url}/searchbyimage?image_url=${imageUrl}`;
-
-    const $ = cheerio.load((await axios.get(scrapeUrl(searchUrl))).data);
+const imageSearch = async ({ content }) => {
+    const searchUrl = `${google_url}/searchbyimage?image_url=${content}`;
+    console.time('request');
+    const response = await axios.get(scrapeUrl(searchUrl));
+    console.timeEnd('request');
+    const $ = cheerio.load(response.data);
     const href = $("a[href^='/search?tbs=simg:CAQS']").first().attr('href');
     if (href) {
         const images_results_url = `${google_url}${href}`;
         const url = scrapeUrl(images_results_url);
         const { data } = await axios.get(url);
         const $images = cheerio.load(data);
-        const hrefs = [...$images("a[rel='noopener']")].map((el) => $(el).attr('href'));
-        return hrefs;
+        return [...$images("a[rel='noopener']")].map((el) => $(el).attr('href'));
     }
     return;
 };
 
 exports.handler = async (event) => {
-    // parse args
-    const { searchKind, queryContent, imageUrl, numResults, country } = event;
-    let results;
-    let links;
-    switch (searchKind) {
+    const { kind, content } = event;
+    let hrefs;
+    switch (kind) {
         case 'text':
-            results = await textSearch({ queryContent, numResults, country });
-            const { organic_results } = results;
-            links = organic_results.map((result) => result.link);
+            hrefs = await textSearch({ content });
             break;
         case 'image':
-            results = await imageSearch({ imageUrl, numResults });
+            hrefs = await imageSearch({ content });
             break;
     }
-
-    // TODO - process to filter irrelevant results
-
-    // TODO - process to return only links
+    if (hrefs) hrefs = hrefs.filter((item, pos, self) => self.indexOf(item) == pos);
 
     return {
-        results,
+        hrefs,
     };
 };

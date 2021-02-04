@@ -1,6 +1,7 @@
 // WooCommerce - http://mbrouka.ma
 // Shopify - https://bearandpartner.com https://alluxur.com
 // shopify Open Graph: https://eu.curalife.com/
+// Other Open Graph: https://1pc.co.il/
 // Wish - https://home.wish.com
 // Ebay - https://www.ebay.com
 // WIX - https://www.kaekoo.com

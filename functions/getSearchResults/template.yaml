@@ -12,8 +12,6 @@ Resources:
     Properties:
       Runtime: nodejs12.x
       Handler: index.handler
-      Timeout: 180
+      Timeout: 60
       MemorySize: 128
       FunctionName: getSearchResults
-      Layers:
-        - arn:aws:lambda:eu-central-1:764866452798:layer:chrome-aws-lambda:20
