@@ -3,30 +3,37 @@ const { invokeLambda } = require('./lambda');
 exports.handler = async (event) => {
     const { searches } = event;
 
-    const hrefs = (
-        await Promise.all(
-            searches.map(
-                (search) =>
-                    new Promise(async (res) => {
-                        const { kind, content } = search;
-                        console.log(`${kind}: ${content}`);
-                        const { hrefs } = await invokeLambda({
-                            functionName: 'getSearchResults',
-                            payload: { kind, content },
-                        });
-                        if (hrefs) {
-                            console.log(`${kind}: ${hrefs.length}`);
-                            res(hrefs);
-                        } else {
-                            // retry
-                            res([]);
-                        }
-                    })
-            )
-        )
-    )
-        .reduce((arr, row) => arr.concat(row), [])
-        .filter((item, pos, self) => self.indexOf(item) == pos);
+    const numTries = 2;
+    const hrefs = [
+        ...new Set(
+            (
+                await Promise.all(
+                    searches.map(
+                        (search) =>
+                            new Promise(async (res) => {
+                                const currTries = 0;
+
+                                while (currTries < numTries) {
+                                    const { kind, content } = search;
+                                    console.log(`${kind}: ${content}`);
+                                    const { hrefs } = await invokeLambda({
+                                        functionName: 'getSearchResults',
+                                        payload: { kind, content },
+                                    });
+                                    if (hrefs) {
+                                        console.log(`${kind}: ${hrefs.length}`);
+                                        res(hrefs);
+                                        return;
+                                    } else {
+                                        currTries++;
+                                    }
+                                }
+                            })
+                    )
+                )
+            ).flat()
+        ),
+    ];
     console.log(JSON.stringify(hrefs));
     console.log(`hrefs: ${hrefs.length}`);
 
