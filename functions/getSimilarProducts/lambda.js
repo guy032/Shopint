@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+AWS.config.correctClockSkew = true;
 const { STAGE, InvokePort } = process.env;
 const Lambda = new AWS.Lambda(
     STAGE !== 'prod'
