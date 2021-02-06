@@ -57,9 +57,8 @@ exports.handler = async (event) => {
             hrefs = await imageSearch({ content, language, country });
             break;
     }
-    if (hrefs) hrefs = hrefs.filter((item, pos, self) => self.indexOf(item) == pos);
 
     return {
-        hrefs,
+        hrefs: [...new Set(hrefs || [])],
     };
 };
