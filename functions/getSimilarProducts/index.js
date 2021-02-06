@@ -11,7 +11,7 @@ exports.handler = async (event) => {
                     searches.map(
                         (search) =>
                             new Promise(async (res) => {
-                                const currTries = 0;
+                                let currTries = 0;
 
                                 while (currTries < numTries) {
                                     const { kind, content, language, country } = search;
