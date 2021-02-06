@@ -14,11 +14,11 @@ exports.handler = async (event) => {
                                 const currTries = 0;
 
                                 while (currTries < numTries) {
-                                    const { kind, content } = search;
+                                    const { kind, content, language, country } = search;
                                     console.log(`${kind}: ${content}`);
                                     const { hrefs } = await invokeLambda({
                                         functionName: 'getSearchResults',
-                                        payload: { kind, content },
+                                        payload: { kind, content, language, country },
                                     });
                                     if (hrefs) {
                                         console.log(`${kind}: ${hrefs.length}`);

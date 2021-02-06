@@ -13,8 +13,11 @@ axiosRetry(axios, {
     },
 });
 
-const textSearch = async ({ content }) => {
-    const searchUrl = `${google_url}/search?q=${encodeURIComponent(content)}&num=100`;
+const textSearch = async ({ content, language, country }) => {
+    const searchUrl = `${google_url}/search?q=${encodeURIComponent(content)}&biw=1920&bih=969&num=100${
+        language ? `&hl=${language}` : ''
+    }${country ? `&gl=${country}` : ''}`;
+    console.log('searchUrl: ', searchUrl);
     console.time('request');
     const response = await axios.get(scrapeUrl(searchUrl));
     console.timeEnd('request');
@@ -22,8 +25,11 @@ const textSearch = async ({ content }) => {
     return [...$('.g a:not([class])')].map((el) => $(el).attr('href'));
 };
 
-const imageSearch = async ({ content }) => {
-    const searchUrl = `${google_url}/searchbyimage?image_url=${content}`;
+const imageSearch = async ({ content, language, country }) => {
+    const searchUrl = `${google_url}/searchbyimage?image_url=${content}&biw=1920&bih=969${
+        language ? `&hl=${language}` : ''
+    }${country ? `&gl=${country}` : ''}`;
+    console.log('searchUrl: ', searchUrl);
     console.time('request');
     const response = await axios.get(scrapeUrl(searchUrl));
     console.timeEnd('request');
@@ -40,14 +46,15 @@ const imageSearch = async ({ content }) => {
 };
 
 exports.handler = async (event) => {
-    const { kind, content } = event;
+    // language - full list of languagages and countries in here: https://serpapi.com/playground in dropdown
+    const { kind, content, language, country } = event;
     let hrefs;
     switch (kind) {
         case 'text':
-            hrefs = await textSearch({ content });
+            hrefs = await textSearch({ content, language, country });
             break;
         case 'image':
-            hrefs = await imageSearch({ content });
+            hrefs = await imageSearch({ content, language, country });
             break;
     }
     if (hrefs) hrefs = hrefs.filter((item, pos, self) => self.indexOf(item) == pos);
