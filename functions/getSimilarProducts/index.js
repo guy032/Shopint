@@ -20,11 +20,12 @@ exports.handler = async (event) => {
                                         functionName: 'getSearchResults',
                                         payload: { kind, content, language, country },
                                     });
-                                    if (hrefs) {
+                                    if (hrefs && hrefs.length > 0) {
                                         console.log(`${kind}: ${hrefs.length}`);
                                         res(hrefs);
                                         return;
                                     } else {
+                                        console.log(`retry ${kind}`);
                                         currTries++;
                                     }
                                 }
@@ -34,7 +35,7 @@ exports.handler = async (event) => {
             ).flat()
         ),
     ];
-    console.log(JSON.stringify(hrefs));
+    // console.log(JSON.stringify(hrefs));
     console.log(`hrefs: ${hrefs.length}`);
 
     const products = (

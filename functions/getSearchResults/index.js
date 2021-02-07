@@ -3,7 +3,7 @@ const axiosRetry = require('axios-retry');
 const cheerio = require('cheerio');
 const scraperapi_key = 'b29e8e3a0736d92679cc2d37e7e2fada';
 const google_url = 'https://www.google.com';
-const scrapeUrl = (url) => `http://api.scraperapi.com/?api_key=${scraperapi_key}&url=${url}`;
+const scrapeUrl = (url) => `http://api.scraperapi.com/?api_key=${scraperapi_key}&url=${url}&premium=true`;
 
 axiosRetry(axios, {
     retryCondition: (error) => {
@@ -14,7 +14,7 @@ axiosRetry(axios, {
 });
 
 const textSearch = async ({ content, language, country }) => {
-    const searchUrl = `${google_url}/search?q=${encodeURIComponent(content)}&biw=1920&bih=969&num=100${
+    const searchUrl = `${google_url}/search?q=${encodeURIComponent(content)}&num=100${
         language ? `&hl=${language}` : ''
     }${country ? `&gl=${country}` : ''}`;
     console.log('searchUrl: ', searchUrl);
@@ -25,10 +25,8 @@ const textSearch = async ({ content, language, country }) => {
     return [...$('.g a:not([class])')].map((el) => $(el).attr('href'));
 };
 
-const imageSearch = async ({ content, language, country }) => {
-    const searchUrl = `${google_url}/searchbyimage?image_url=${content}&biw=1920&bih=969${
-        language ? `&hl=${language}` : ''
-    }${country ? `&gl=${country}` : ''}`;
+const imageSearch = async ({ content }) => {
+    const searchUrl = `${google_url}/searchbyimage?image_url=${content}`;
     console.log('searchUrl: ', searchUrl);
     console.time('request');
     const response = await axios.get(scrapeUrl(searchUrl));
