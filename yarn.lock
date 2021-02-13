@@ -1146,6 +1146,13 @@ saxes@^5.0.0:
   dependencies:
     xmlchars "^2.2.0"
 
+serpy@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/serpy/-/serpy-1.0.1.tgz#efcb17393b5a64f3515fe93d2ab380dac3a25342"
+  integrity sha512-EJxuu30L93iXIyKfW43Suj3Ip8zUQe0zRoVkeslUpHzwwGJFhhfwsxwjrmXkevQ1IHv7KOYpVBYpMhoSjVWG+Q==
+  dependencies:
+    axios "^0.21.1"
+
 source-map@~0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"

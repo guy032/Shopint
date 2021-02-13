@@ -16,6 +16,7 @@
     "jsdom": "^16.4.0",
     "jsonld-parser": "^0.6.1",
     "puppeteer": "^5.5.0",
+    "serpy": "^1.0.1",
     "url-parse": "^1.4.7"
   },
   "devDependencies": {
