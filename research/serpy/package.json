@@ -1,8 +1,8 @@
 {
-  "name": "shopint-research",
+  "name": "serpy",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "scraper.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,15 +11,9 @@
   "dependencies": {
     "axios": "^0.21.1",
     "cheerio": "^1.0.0-rc.5",
-    "fs-extra": "^9.1.0",
-    "google-search-results-nodejs": "^2.0.1",
-    "js-crawler": "^0.3.21",
-    "jsdom": "^16.4.0",
-    "jsonld-parser": "^0.6.1",
-    "puppeteer": "^5.5.0",
     "url-parse": "^1.4.7"
   },
   "devDependencies": {
-    "prettier": "2.2.1"
+    "prettier": "^2.2.1"
   }
 }

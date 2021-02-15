@@ -1,0 +1,8 @@
+{
+  "zap.co.il": {
+    "className": "a.modelClick[href*='fs.aspx']"
+  },
+  "ret.co.il": {
+    "className": ".p-price-box .btn-primary"
+  }
+}

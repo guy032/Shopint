@@ -1,0 +1,18 @@
+{
+  "title": ".kp-wholepage [data-attrid='title']",
+  "subtitle": ".kp-wholepage [data-attrid='subtitle']",
+  "image": ".kp-wholepage [data-attrid='image'] img",
+  "secondary_image": ".kp-wholepage [data-attrid='secondary image']",
+  "visit_official_site": ".kp-wholepage [data-attrid='visit_official_site']",
+  "description": ".kp-wholepage [data-attrid='description'] span",
+  "ceo": ".kp-wholepage [data-attrid='kc:/organization/organization:ceo'] span:nth-child(2)",
+  "founded": ".kp-wholepage [data-attrid='kc:/organization/organization:founded'] span:nth-child(2)",
+  "headquarters": ".kp-wholepage [data-attrid='kc:/organization/organization:headquarters'] span:nth-child(2)",
+  "sales_phone": ".kp-wholepage [data-attrid='kc:/organization/organization:sales phone'] span:nth-child(2)",
+  "chat": ".kp-wholepage [data-attrid='kc:/organization/organization:chat'] span:nth-child(2)",
+  "stock_quote": ".kp-wholepage [data-attrid='kc:/business/issuer:stock quote'] span:nth-child(2)",
+  "founder": ".kp-wholepage [data-attrid='kc:/business/business_operation:founder'] span:nth-child(2)",
+  "revenue": ".kp-wholepage [data-attrid='hw:/collection/organizations:revenue'] span:nth-child(2)",
+  "subsidiaries": ".kp-wholepage [data-attrid='hw:/collection/organizations:subsidiaries'] span:nth-child(2)",
+  "products": ".kp-wholepage [data-attrid='hw:/collection/consumer_companies:product'] span:nth-child(2)"
+}

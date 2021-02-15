@@ -9,5 +9,9 @@
     "deploy": "aws cloudformation deploy --profile shopint --region eu-central-1 --template-file packaged.yaml --stack-name getSimilarProducts --capabilities CAPABILITY_IAM",
     "publish": "npm run package && npm run deploy"
   },
-  "dependencies": {}
+  "dependencies": {
+    "axios": "^0.21.1",
+    "cheerio": "^1.0.0-rc.5",
+    "url-parse": "^1.4.7"
+  }
 }

@@ -12,6 +12,14 @@ Resources:
     Properties:
       Runtime: nodejs12.x
       Handler: index.handler
-      Timeout: 60
+      Timeout: 120
       MemorySize: 128
       FunctionName: getSearchResults
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+                - lambda:InvokeAsync
+              Resource: '*'
