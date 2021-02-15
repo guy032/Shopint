@@ -8,7 +8,7 @@ const { traverse } = require('./helpers');
 const scrapeUrl = (url) => `http://api.scraperapi.com/?api_key=${scraperapi_key}&url=${url}`;
 
 (async () => {
-    const link = 'https://www.google.com/search?q=apple';
+    const link = 'https://www.google.com/search?q=coffee';
     var Url = require('url-parse');
     const { origin } = Url(link);
 
@@ -19,12 +19,24 @@ const scrapeUrl = (url) => `http://api.scraperapi.com/?api_key=${scraperapi_key}
     const json = require('./google/knowledge-graph.json');
 
     // normalize google image src
-    const scripts = $('script').filter((i, script) => $(script).html().startsWith("(function(){var s='data:image/"));
-    scripts.map((i, script) => {
-        const html = $(script).html();
-        const id = /var ii=\['(.+)'\]/gm.exec(html)[1];
-        const data = /var s='(.+)';/gm.exec(html)[1];
-        $(`img[id='${id}']`).attr('src', data);
+    $('script').map((i, script) => {
+        const js = $(script)
+            .html()
+            .replace(/\s*[\r\n]/gm, '')
+            .replace(/\s\s+/gm, ' ')
+            .trim()
+            .replace('(function () { var s = ', '(function(){var s=')
+            .replace('var ii = ', 'var ii=');
+        if (js.startsWith("(function(){var s='data:image/")) {
+            const idMatch = /var ii=\['(.+)'\]/gm.exec(js);
+            if (idMatch) {
+                const ids = idMatch[1].replace(/'/gm, '').replace(/\s/gm, '').split(',');
+                for (id of ids) {
+                    const data = /var s='(.+)';/gm.exec(js)[1];
+                    $(`img[id='${id}']`).attr('src', data);
+                }
+            }
+        }
     });
 
     traverse($, json, origin);
@@ -32,11 +44,10 @@ const scrapeUrl = (url) => `http://api.scraperapi.com/?api_key=${scraperapi_key}
     console.log(JSON.stringify(json, null, 2));
 })();
 
-// image
-// secondary image
+// kc:/food/food:energy
+// kc:/food/food:nutrition
 
-// kc:/common/topic:social media presence
-// kc:/common:sideways
+// hw:/collection/beverages:country of origin
 
 // kc:/collection/knowledge_panels/has_phone:phone
 // kc:/collection/knowledge_panels/local_reviewable:star_score
