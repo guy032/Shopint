@@ -7,7 +7,12 @@ module.exports = {
         if (!link.startsWith('http')) link = `${origin}${link}`;
         return link;
     },
-    findImage: ($, $selector) => $selector.attr('src'),
+    findImage: ($, $selector) => {
+        const src = $selector.attr('src');
+        return src !== 'data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+            ? src
+            : null;
+    },
     findLinks: ($, $selector, origin) => [
         ...$selector.map((i) => {
             return {
@@ -17,4 +22,25 @@ module.exports = {
             };
         }),
     ],
+    findKnowledgeGraphImages: ($, $selector) => {
+        return [
+            ...$selector.map((i, selector) => ({
+                source: $(selector).attr('data-lpage'),
+                image: module.exports.findImage($, $(selector).find('img')),
+            })),
+        ].filter((el) => el.image);
+    },
+    findKnowledgeGraphFoodNutrition: ($, $selector) => {
+        return [
+            ...$selector.find("tr[role='listitem']").map((i, selector) => {
+                const item = {
+                    name: $(selector).find('td:nth-of-type(1) span:nth-of-type(1)').text(),
+                    abs: $(selector).find('.abs').text(),
+                };
+                const pdv = $(selector).find('.pdv').text();
+                if (pdv) item.pdv = pdv;
+                return item;
+            }),
+        ];
+    },
 };
