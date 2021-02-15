@@ -15,5 +15,3 @@ Resources:
       Timeout: 180
       MemorySize: 128
       FunctionName: getIp
-      Layers:
-        - arn:aws:lambda:eu-central-1:764866452798:layer:chrome-aws-lambda:20

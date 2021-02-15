@@ -7,19 +7,11 @@ Globals:
         STAGE: prod
         InvokePort: 9002
 Resources:
-  getSearchResults:
+  getGoogleResults:
     Type: AWS::Serverless::Function
     Properties:
       Runtime: nodejs12.x
       Handler: index.handler
-      Timeout: 120
+      Timeout: 60
       MemorySize: 128
-      FunctionName: getSearchResults
-      Policies:
-        - Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Action:
-                - lambda:InvokeFunction
-                - lambda:InvokeAsync
-              Resource: '*'
+      FunctionName: getGoogleResults

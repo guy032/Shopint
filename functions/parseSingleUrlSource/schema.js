@@ -62,6 +62,7 @@ exports.getProductSchema = (origin, html) => {
         product = Product[0];
     } else if (rfdHTMLSelectors.length > 0) {
         console.log('todo: RFD-A');
+        // https://developers.google.com/search/docs/data-types/product#rdfa
     } else if (ogMetas.length > 0) {
         const { og } = ogParse(
             [...ogMetas].map((el) => ({
@@ -70,8 +71,34 @@ exports.getProductSchema = (origin, html) => {
             }))
         );
         const { type } = og;
-        if (type.toLowerCase() === 'product') product = og;
+        if (type && type.toLowerCase() === 'product') product = og;
+        else {
+            console.log(JSON.stringify(og));
+            // we are missing type of product or price attribute to consider this as a product
+            // https://ksp.co.il/?uin=102134 has a clue with itemprop="itemCondition"
+        }
+
+        // todo: many times no product type but yet it's a product
+        // https://www.azrieli.com/o/b7246227-4374-4478-ae01-3ba89190dbd8
+        // https://www.e-katalog.ru/CASIO-G-SHOCK-DW-5600E-1V.htm
+        // price is missing many times from the headers but exists in Facebook Pixel Code if bigger than 0/1
+        // https://publicwww.com/websites/%22fbq%28%27track%27%2C+%27ViewContent%27%22+%22content_type%3A+%27product%27%22+%22currency%22/2
+        // fbq('track', 'ViewContent', {
+        //     content_ids: ['b7246227-4374-4478-ae01-3ba89190dbd8'],
+        //     content_type: 'product',
+        //     value: 2430.00,
+        //     currency: 'ILS'
+        // });
+        // fbq('track', 'ViewContent', {
+        //     content_category: 'Наручные часы',
+        //     content_name: 'Casio G-Shock DW-5600E-1V',
+        //     content_ids: [362312],
+        //     content_type: 'product',
+        //     currency: 'RUB',
+        //     value: 0.00
+        // });
     }
+    // If we found the product link through a source like Google Shopping or Zap and they know the details of the product fallback to this.
 
     if (product) {
         product = JSON.stringify(product);

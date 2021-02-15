@@ -1,7 +1,12 @@
 // WooCommerce - http://mbrouka.ma
 // Shopify - https://bearandpartner.com https://alluxur.com
 // shopify Open Graph: https://eu.curalife.com/
-// Other Open Graph: https://1pc.co.il/
+// Other Open Graph:
+https://www.azrieli.com/o/b7246227-4374-4478-ae01-3ba89190dbd8
+https://1pc.co.il/
+https://www.brooksbrothers.com/
+https://czytam.pl/k,ks_907001,Pod-tym-samym-niebem-Vescio-Robert.html
+
 // Wish - https://home.wish.com
 // Ebay - https://www.ebay.com
 // WIX - https://www.kaekoo.com
