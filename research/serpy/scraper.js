@@ -16,7 +16,7 @@ const scrapeUrl = (url) => `http://api.scraperapi.com/?api_key=${scraperapi_key}
     const html = fs.readFileSync('google/samples/knowledge-graph-coffee-en.html').toString();
 
     const $ = cheerio.load(html);
-    const json = require('./google/knowledge-graph.json');
+    const json = require('./google/organic-results.json');
 
     // normalize google image src
     $('script').map((i, script) => {
@@ -45,9 +45,6 @@ const scrapeUrl = (url) => `http://api.scraperapi.com/?api_key=${scraperapi_key}
 })();
 
 // kc:/food/food:energy
-// kc:/food/food:nutrition
-
-// hw:/collection/beverages:country of origin
 
 // kc:/collection/knowledge_panels/has_phone:phone
 // kc:/collection/knowledge_panels/local_reviewable:star_score
