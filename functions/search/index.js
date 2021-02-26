@@ -38,19 +38,21 @@ exports.handler = async (event) => {
         };
     }
 
+    const data = (
+        await axios.get(
+            scrapeUrl(
+                `${google_url}/search?q=${encodeURIComponent(content)}&biw=1920&bih=969&num=100${
+                    language ? `&hl=${language}` : ''
+                }${country ? `&gl=${country}` : ''}`
+            )
+        )
+    ).data;
+
     return {
         kind,
         content,
         language,
         country,
-        data: (
-            await axios.get(
-                scrapeUrl(
-                    `${google_url}/search?q=${encodeURIComponent(content)}&biw=1920&bih=969&num=100${
-                        language ? `&hl=${language}` : ''
-                    }${country ? `&gl=${country}` : ''}`
-                )
-            )
-        ).data,
+        data,
     };
 };

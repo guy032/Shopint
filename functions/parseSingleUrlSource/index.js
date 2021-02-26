@@ -18,7 +18,10 @@ axiosRetry(axios, {
 });
 
 exports.handler = async (event) => {
-    const { url, parseHTML, parseHrefs, parseSchema } = event;
+    let { url, parseHTML, parseHrefs, parseSchema } = event;
+    if (url === undefined) {
+        ({ url, parseHTML, parseHrefs, parseSchema } = event['queryStringParameters']);
+    }
     console.log('url: ', url);
     const { host: rootHost, origin: rootOrigin } = new Url(url);
 
