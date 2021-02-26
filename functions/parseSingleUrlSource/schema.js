@@ -106,7 +106,7 @@ exports.getProductSchema = (origin, html) => {
         product = JSON.parse(product);
 
         if (product.url && product.url.startsWith('/')) product.url = `${origin}${product.url}`;
-        if (product.image && !Array.isArray(product.image) && product.image.startsWith('/')) {
+        if (product.image && typeof product.image === 'string' && product.image.startsWith('/')) {
             product.image = `${origin}${product.image}`;
         }
 

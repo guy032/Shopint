@@ -2,13 +2,13 @@
   "searches": [
     {
       "kind": "text",
-      "content": "MFC-L6900DW",
-      "language": "he",
+      "content": "CuraLin",
+      "language": "en",
       "country": "il"
     },
     {
       "kind": "shop",
-      "content": "MFC-L6900DW",
+      "content": "CuraLin",
       "country": "Tel Aviv-Yafo,Tel Aviv District,Israel"
     }
   ]

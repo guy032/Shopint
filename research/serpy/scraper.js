@@ -16,6 +16,7 @@ const scrapeUrl = (url) => `http://api.scraperapi.com/?api_key=${scraperapi_key}
     const html = fs.readFileSync('google/samples/knowledge-graph-coffee-en.html').toString();
 
     const $ = cheerio.load(html);
+    // add all google json parsers
     const json = require('./google/organic-results.json');
 
     // normalize google image src

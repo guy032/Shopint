@@ -148,7 +148,7 @@ exports.handler = async (event) => {
     console.log(JSON.stringify(domains));
     console.log(`unique domains: ${domains.length}`);
 
-    /* const products = (
+    const products = (
         await Promise.all(
             hrefs.map(
                 (href) =>
@@ -169,7 +169,7 @@ exports.handler = async (event) => {
 
     // offers/0/url remove non-empty duplicate links
 
-    console.log(`products: ${products.length}`); */
+    console.log(`products: ${products.length}`);
 
-    return /* products */;
+    return products;
 };
