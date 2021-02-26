@@ -1,0 +1,6 @@
+{
+  "result": {
+    "selector": "div[class='g']",
+    "type": "findGoogleOrganicResults"
+  }
+}

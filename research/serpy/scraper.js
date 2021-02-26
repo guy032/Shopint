@@ -13,10 +13,10 @@ const scrapeUrl = (url) => `http://api.scraperapi.com/?api_key=${scraperapi_key}
     const { origin } = Url(link);
 
     // const { data: html } = await axios.get(scrapeUrl(link));
-    const html = fs.readFileSync('google/samples/knowledge-graph-apple-en.html').toString();
+    const html = fs.readFileSync('google/samples/knowledge-graph-coffee-en.html').toString();
 
     const $ = cheerio.load(html);
-    const json = require('./google/knowledge-graph.json');
+    const json = require('./google/organic-results.json');
 
     // normalize google image src
     $('script').map((i, script) => {
@@ -40,14 +40,11 @@ const scrapeUrl = (url) => `http://api.scraperapi.com/?api_key=${scraperapi_key}
     });
 
     traverse($, json, origin);
-    // console.log(json);
-    console.log(JSON.stringify(json, null, 2));
+    console.log(json);
+    // console.log(JSON.stringify(json, null, 2));
 })();
 
 // kc:/food/food:energy
-// kc:/food/food:nutrition
-
-// hw:/collection/beverages:country of origin
 
 // kc:/collection/knowledge_panels/has_phone:phone
 // kc:/collection/knowledge_panels/local_reviewable:star_score
